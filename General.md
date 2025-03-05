@@ -32,7 +32,3 @@
 ①采用SCHED_FIFO实时调度策略。
 
 ②使用用户态中断处理（如Linux的io_uring）。
-
-
-<font  color='235977'></font>
-
