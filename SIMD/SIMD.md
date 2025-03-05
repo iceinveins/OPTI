@@ -4,10 +4,24 @@
 
 想象这样一个场景：搬家公司用自行车运送家具 vs 用重型卡车整批运输。这就是普通for循环与SIMD指令的本质区别。以常见的SSE和AVX指令集为例：
 
-SSE指令：128位寄存器，单指令处理4个float
-AVX2指令：256位寄存器，单指令处理8个float
+SSE指令：128位寄存器，单指令处理4个float,不支持double
+
+SSE2指令：128位寄存器，单指令处理4个float,且支持处理2个double
+
+AVX2指令：256位寄存器，单指令处理8个float,且支持处理4个double
+
 AVX-512：512位寄存器，单指令处理16个float
-图片
+|  | **float** |  | **double** |  | 备注 |
+| --- | --- | --- | --- | --- | --- |
+|  | 指令 | Intrinsic / Asm | 指令 | Intrinsic / Asm |  |
+| **SSE/SSE2** | - | _m128 / XMMWORD | - | _m128d / XMMWORD | 类型 |
+|  | - | _mm_setzero_ps / XORPS | - | _mm_setzero_pd / XORPD | 赋0 |
+|  | - | _mm_load_ps / MOVAPS | - | _mm_load_pd / MOVAPD | 加载 |
+|  | - | _mm_add_ps / ADDPS | - | _mm_add_pd / ADDPD | 加法 |
+| **AVX/AVX2** | - | _m256 / YMMWORD | - | _m256d / YMMWORD | 类型 |
+|  | - | _mm256_setzero_ps / VXORPS | - | _mm256_setzero_pd / VXORPD | 赋0 |
+|  | - | _mm256_load_ps / VMOVAPS | - | _mm256_load_pd / VMOVAPD | 加载 |
+|  | - | _mm256_add_ps / VADDPS | - | _mm256_add_pd / VADDPD | 加法 | 
 #### <font  color='dc843f'>SSE实战：数组求和性能提升400%</font>
 让我们从最简单的数组求和开始。先看传统实现：
 ```
@@ -31,8 +45,8 @@ float sse_sum(const float* arr, size_t n) {
     }
     
     // 水平相加
-    sum = _mm_hadd_ps(sum, sum);
-    sum = _mm_hadd_ps(sum, sum);
+    sum = _mm_add_ps(sum, sum);
+    sum = _mm_add_ps(sum, sum);
     
     float result;
     _mm_store_ss(&result, sum);
@@ -46,7 +60,7 @@ float sse_sum(const float* arr, size_t n) {
 | SSE优化    | 3.1        |4x|
 | 自动向量化  | 3.8       |3.3x|
 
-编译命令：`g++ -O3 -march=native simd_demo.cpp`
+编译命令：`g++ -o simd_demo.elf simd_demo.cpp -march=native -msse2 -O3 `
 
 这个结果揭示了一个有趣的现象：编译器自动向量化的效果往往不如手动优化，因为编译器无法保证内存对齐等前提条件。
 
