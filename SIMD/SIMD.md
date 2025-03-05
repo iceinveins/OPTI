@@ -60,6 +60,8 @@ float sse_sum(const float* arr, size_t n) {
 | SSE优化    | 3.1        |4x|
 | 自动向量化  | 3.8       |3.3x|
 
+编译前可以通过`g++ -Q --help=target`或者`lscpu`检查编译机器是否支持此指令集，若不支持，编译时可能会报错`Illegal instruction`
+
 编译命令：`g++ -o simd_demo.elf simd_demo.cpp -march=native -msse2 -O3 `
 
 这个结果揭示了一个有趣的现象：编译器自动向量化的效果往往不如手动优化，因为编译器无法保证内存对齐等前提条件。
