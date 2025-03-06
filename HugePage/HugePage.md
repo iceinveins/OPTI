@@ -31,6 +31,19 @@ Linux系统中对于用户态程序可见的是Virtual Address，每一个程序
 3. **减少页表查询的耗时**  
 缩小PageTables大小的同时也就减少了查表的耗时。当TLB Miss之后，就会去查询页表，我们不可能保证每次都能命 中TLB Cache的，减少页表查询的耗时，就加速了程序访问虚拟内存的速度，从而提高整体性能。
 
+缺点：  
+[Large Pages May Be Harmful on NUMA Systems](https://www.usenix.org/conference/atc14/technical-sessions/presentation/gaud)
+1. **CPU对同一个Page抢占增多**  
+对于写操作密集型的应用，Huge Page会大大增加Cache写冲突的发生概率。由于CPU独立Cache部分的写一致性用的是MESI协议，写冲突就意味：
+- 通过CPU间的总线进行通讯，造成总线繁忙
+- 同时也降低了CPU执行效率。
+- CPU本地Cache频繁失效
+类比到数据库就相当于，原来一把用来保护10行数据的锁，现在用来锁1000行数据了。必然这把锁在线程之间的争抢概率要大大增加。
+2. **连续数据需要跨CPU读取(False Sharing)**  
+原本在4K小页上可以连续分配，并因为较高命中率而在同一个CPU上实现locality的数据。到了Huge Page的情况下，就有一部分数据为了填充统一程序中上次内存分配留下的空间，而被迫分布在了两个页上。而在所在Huge Page中占比较小的那部分数据，由于在计算CPU亲和力的时候权重小，自然就被附着到了其他CPU上。那么就会造成：本该以热点形式存在于CPU2 L1或者L2 Cache上的数据，不得不通过CPU inter-connect去remote CPU获取数据。 假设我们连续申明两个数组，Array A和Array B大小都是1536K。内存分配时由于第一个Page的2M没有用满，因此Array B就被拆成了两份，分割在了两个Page里。而由于内存的亲和配置，一个分配在Zone 0，而另一个在Zone 1。那么当某个线程需要访问Array B时就不得不通过代价较大的Inter-Connect去获取另外一部分数据。
+
+**充分的测试和对于优化原理的理解是一个成功优化的前提条件。**
+
 ## <font  color='dc843f'>如何设置：</font>
 ## 第1步：检查大页面状态
 
