@@ -3,11 +3,13 @@
 
 #### <font  color='dc843f'>内存层级意识</font>
 
-1. 通过alignas强制数据结构缓存行对齐，避免伪共享。
+1. 定义类型通过alignas；动态分配通过posix_memalign(&buf, size)进行内存对齐，确保内存访问不会跨页，提高内存访问效率，避免伪共享。
 
 2. 使用std::hardware_destructive_interference_size指导数据结构布局。
 
 3. 优先选择连续内存容器（如std::vector），利用缓存局部性。
+
+4. 使用madvise(ptr, MADV_WILLNEED)通知内核程序即将访问指定内存区域，触发主动预读，减少页错误
 
 #### <font  color='dc843f'>并发架构设计</font>
 
