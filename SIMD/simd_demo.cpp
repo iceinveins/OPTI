@@ -2,43 +2,9 @@
 #include <chrono>
 #include <cpuid.h>
 #include <vector>
-#include <random>
 #include <functional>
 #include <emmintrin.h>
-
-template<typename T>
-std::vector<T> GenerateDiffNumber(T min, T max, int num) {
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::function<T ()> generator;
-    if (std::is_same<T, int>::value) {
-        std::uniform_int_distribution<int> dist(min, max);
-        generator = [=]() mutable {return dist(gen);};
-    }
-    else if(std::is_same<T, float>::value){
-        std::uniform_real_distribution<float> dist(min, max);
-        generator = [=]() mutable {return dist(gen);};
-    }
-    else if(std::is_same<T, double>::value){
-        std::uniform_real_distribution<double> dist(min, max);
-        generator = [=]() mutable {return dist(gen);};
-    }
-    
-    std::vector<T> diff;
-    // std::vector<T> tmp(max - min + 1);
-    // std::iota(tmp.begin(), tmp.end(), min);
-
-    // for (int i = 0; i < num; ++i) {
-    //     auto rnd = generator();
-    //     diff.push_back(tmp[rnd - min]);
-    //     std::swap(tmp[rnd - min], tmp[tmp.size() - 1]);
-    //     tmp.pop_back();
-    // }
-    for (int i = 0; i < num; ++i) {
-        diff.push_back(generator());
-    }
-    return diff;
-}
+#include "../generateRandom.hpp"
 
 float normal_sum(const std::vector<float>& arr, size_t n) {
     float sum = 0.0f;
@@ -82,11 +48,11 @@ int main() {
         return -1;
     }
     int num = 204800;
-    auto result = GenerateDiffNumber<float>(1.0f, 1000000.0f, num);
+    auto sample = GenerateDiffNumber<float>(1.0f, 1000000.0f, num);
     // A
     {
         auto start = std::chrono::high_resolution_clock::now();
-        normal_sum(result, num);
+        normal_sum(sample, num);
         auto end = std::chrono::high_resolution_clock::now();
         auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start);
         std::cout << "A 耗时" << duration.count() << "纳秒" << std::endl;
@@ -94,7 +60,7 @@ int main() {
     // B
     {
         auto start = std::chrono::high_resolution_clock::now();
-        sse_sum(result, num);
+        sse_sum(sample, num);
         auto end = std::chrono::high_resolution_clock::now();
         auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start);
         std::cout << "B 耗时" << duration.count() << "纳秒" << std::endl;
