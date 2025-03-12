@@ -1,5 +1,6 @@
 #include <vector>
 #include <random>
+#include <functional>
 
 template<typename T>
 std::vector<T> GenerateDiffNumber(T min, T max, int cnt) {
