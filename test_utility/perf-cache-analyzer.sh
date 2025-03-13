@@ -11,10 +11,10 @@ fi
 
 # 默认监控事件列表（Intel架构）
 DEFAULT_EVENTS=(
-    "L1-dcache-load-misses"     # L1数据缓存加载未命中
-    "L1-dcache-loads"           # L1数据缓存加载总数
-    "LLC-load-misses"           # 最后一级缓存加载未命中
-    "LLC-loads"                 # 最后一级缓存加载总数
+    # "L1-dcache-load-misses"     # L1数据缓存加载未命中
+    # "L1-dcache-loads"           # L1数据缓存加载总数
+    # "LLC-load-misses"           # 最后一级缓存加载未命中
+    # "LLC-loads"                 # 最后一级缓存加载总数
     "cache-misses"              # 所有缓存未命中
     "cache-references"          # 缓存访问总数
 )
