@@ -9,6 +9,7 @@ CRTP（Curiously Recurring Template Pattern）是C++模板编程中的一种通�
 
 通过使用CRTP，可以在编译期间将基类的行为特化到派生类中，而无需运行时的虚函数调用开销，使得在编译时实现静态多态性。演讲时提供了3个不同类似的代码实现：
 
+---
 示例代码1：
 ```
 class order {
@@ -29,14 +30,12 @@ class generic_order : public order {
     // 无重写，直接继承基类的place_order()
 };
 ```
-上面的代码示例有三个类：基类order，派生类specific_order和generic_order。基类order有一个虚函数place_order()，并提供了默认实现。specific_order重写了这个虚函数，而generic_order继承自order但没有重写place_order()。
+上面的代码示例有三个类：基类order，派生类specific_order和generic_order。  
+基类order有一个虚函数place_order()，并提供了默认实现。specific_order重写了这个虚函数，而generic_order继承自order但没有重写place_order()。
 
 generic_order没有实现place_order()意味着它直接使用基类的默认实现。在某些情况下可能合理，比如当存在一种通用的订单类型不需要特殊处理时。当然，这个在实际中肯定会存在一些风险，因为基类的默认实现如果遇到不适用的业务场景，那系统肯定会出现逻辑错误。
 
-其中虚函数和纯虚函数的区别在于，纯虚函数没有默认实现，必须在派生类中重写。如果order类的place_order()是纯虚函数（即virtual void place_order() = 0;），那么generic_order必须实现这个方法，否则编译会失败。因此，使用纯虚函数可以强制派生类提供自己的实现，增加代码的安全性。
-
-这段代码示例使用的是动态多态，依赖虚函数表，运行时解析函数调用。这种实现会带来一定的性能开销，比较适合运行时灵活性的场景。这个我们国内从事交易系统的同学肯定不陌生。
-
+---
 示例代码2：
 ```
 #include <iostream>
@@ -75,18 +74,19 @@ int main() {
     return 0;
 }
 ```
-这段代码就使用了 CRTP实现静态多态，这样就可以通过编译时多态替代运行时虚函数机制，从而提升性能。详细来分析下：
+这段代码就使用了***CRTP实现静态多态***，这样就可以通过编译时多态替代运行时虚函数机制，从而提升性能。详细来分析下：
 
 首先定义了一个模版参数actual_type，表示派生类的具体类型，基类通过此参数访问派生类的成员方法。
 
-place_order() 方法通过 static_cast<actual_type*>(this) 将基类指针转换为派生类指针，并调用派生类的 actual_place()。（注意：这就是是CRTP的核心：基类直接调用派生类的方法，不使用虚函数表，如本代码中，基类模板通过 static_cast 将 this 指针转换为派生类类型，直接调用派生类的方法。这个过程在编译时完成，节约运行时的开销。），其中actual_place() 方法基类提供一个默认实现，但派生类可以选择覆盖它。
+- place_order() 方法通过 static_cast<actual_type*>(this) 将基类指针转换为派生类指针，并调用派生类的 actual_place()。（注意：这就是是CRTP的核心：基类直接调用派生类的方法，不使用虚函数表，如本代码中，基类模板通过 static_cast 将 this 指针转换为派生类类型，直接调用派生类的方法。这个过程在编译时完成，节约运行时的开销。），其中actual_place() 方法基类提供一个默认实现，但派生类可以选择覆盖它。
 
-派生类 specific_order 继承自 order<specific_order>，即模板参数为自身类型。这是CRTP的标准用法。覆盖 actual_place()，提供了具体的订单处理逻辑，替换基类的默认实现。其调用流程为：当调用 specific_order::place_order() 时，会执行基类的 place_order() 方法，进而调用派生类的 actual_place()。
+- 派生类 specific_order 继承自 order<specific_order>，即模板参数为自身类型。这是CRTP的标准用法。覆盖 actual_place()，提供了具体的订单处理逻辑，替换基类的默认实现。其调用流程为：当调用 specific_order::place_order() 时，会执行基类的 place_order() 方法，进而调用派生类的 actual_place()。
 
-派生类 generic_order 同样继承自模板参数为自身的基类 order<generic_order>。未覆盖 actual_place()：直接使用基类中定义的默认实现。
+- 派生类 generic_order 同样继承自模板参数为自身的基类 order<generic_order>。未覆盖 actual_place()：直接使用基类中定义的默认实现。
 
 其中order<actual_type>::actual_place() 可包含通用逻辑（如订单验证、日志记录）。
 
+---
 示例代码3：
 ```
 template <class Execution, template <class A, class B> class SocketHandlerType = SocketHandlers::Tcp>
@@ -95,25 +95,19 @@ class BOE2 : public ExecutionProtocol<Execution, SocketHandlerType, BOE2Sequence
     // 类体内容...
 };
 ```
-这个思路理解了好多遍，逻辑理解了，但没有彻底理解这么设计的“初心”和“灵魂”之处。先从代码逻辑层面说明，结合演讲者的讲解，目的是通过模板和策略模式实现了一个高度可配置的订单执行引擎。
-Execution：（执行策略）：表示订单执行的具体逻辑（如直接执行、批量执行、智能路由等），比如时间中我们可能存在条件单，或者直接委托的订单。通过模板参数注入，就实现了不同执行策略的灵活切换。
+目的是通过模板和策略模式实现了一个高度可配置的订单执行引擎。
 
-SocketHandlerType：接受两个类型参数（A和B），表示网络协议的具体实现。比如代码示例中默认是：TCP。
-
-
+- Execution：（执行策略）：表示订单执行的具体逻辑（如直接执行、批量执行、智能路由等），比如时间中我们可能存在条件单，或者直接委托的订单。通过模板参数注入，就实现了不同执行策略的灵活切换。
+- SocketHandlerType：接受两个类型参数（A和B），表示网络协议的具体实现。比如代码示例中默认是：TCP。
 
 BOE2继承自ExecutionProtocol，其模板参数如下：
-
-Execution：传递来自BOE2的执行策略，决定订单如何发送到交易所。
-
-SocketHandlerType：传递网络协议处理策略，管理底层通信（如TCP/UDP）。
-
-BOE2SequenceSourceType：序列号生成策略，用于为每条订单生成唯一标识（如时间戳+计数器）。需在代码其他位置定义。
-
-HeartbeatPolicy::Send：心跳策略，定期发送心跳包以维持连接活跃。Send表示主动发送心跳，其他策略可能包括Ignore（不处理）或Respond（仅响应心跳）。
+- Execution：传递来自BOE2的执行策略，决定订单如何发送到交易所。
+- SocketHandlerType：传递网络协议处理策略，管理底层通信（如TCP/UDP）。
+- BOE2SequenceSourceType：序列号生成策略，用于为每条订单生成唯一标识（如时间戳+计数器）。需在代码其他位置定义。
+- HeartbeatPolicy::Send：心跳策略，定期发送心跳包以维持连接活跃。Send表示主动发送心跳，其他策略可能包括Ignore（不处理）或Respond（仅响应心跳）。
 
 
-
+---
 通过模板参数将不同策略（执行、网络、心跳）注入基类，实现模块化设计。各策略独立变化，互不影响。采用模板元编程，在编译时确定具体策略类型，避免运行时多态开销，适合高频交易的低延迟需求。也可以转换成如下代码更好的理解：
 ```
 // 定义策略组件
@@ -133,6 +127,7 @@ UdpEngine udp_engine;
 udp_engine.send_order(/* 订单详情 */); // 通过UDP发送，批量执行
 ```
 
+---
 再整体比较下上面给出的三种代码示例的优缺点，当然重点是CRTP：
 | 维度       | 代码1 (传统多态)      | 代码2 (CRTP静态多态)             | 代码3 (策略组合+CRTP)              |
 | ---------- | --------------------- | -------------------------------- | ---------------------------------- |
