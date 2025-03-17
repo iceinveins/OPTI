@@ -119,6 +119,11 @@ hugeadm --pool-pages-min 2MB:4096
 ```
 hugeadm --pool-pages-max 2MB:12850
 ```
+若要关闭HugePages,只需要将大小置为0
+```
+hugeadm --pool-pages-min DEFAULT:0
+hugeadm --pool-pages-max DEFAULT:0
+```
 验证新的大页面池
 ```
 hugeadm --pool-list  
@@ -129,7 +134,7 @@ Size        Minimum  Current  Maximum  Default
 ```
 
 ## <font  color='dc843f'>第3步：如何确定参数？:</font>
-以下来自与Deepseek的对话：
+以下来自与Deepseek的对话：  
 Q: 进程运行时占用内存约40GB,想要利用大页内存优化，怎么配置比较合理？
 A:
 为了优化40GB内存进程的性能，配置大页内存（HugePages）的合理步骤如下：
