@@ -1,5 +1,20 @@
 # <font  color='3d8c95'>Transparent Huge Pages透明大页</font>
-## <font  color='dc843f'>如何设置</font>
+
+## <font  color='dc843f'>Why use THP</font>
+标准大页管理是预分配的方式，而透明大页管理则是动态分配的方式。
+
+优点：
+- 减少TLB Miss 和缺页中断的数量
+
+缺点：
+- 内存额外开销增加  
+当内存的一个page增加到2MB时，即使我们使用很小的一点内存时，也会消耗一个page，造成2MB的内存开销。 这样是一个page4k时的512倍。当然在现代服务器上，可以忽略不计。有时也会也会造成严重的影响，如果内存 使用的比较琐碎，造成大量2MB的page都无法真正释放，可能会造成进程使用内存过量，被OOM Killer干掉。
+
+- CPU开销  
+当Transparent HugePages的2MB的page被SWAP到磁盘时，需要被重新划分为4K的page，这时需要<font  color='fed3a8'>额外的CPU开销，以及更高的IO延时</font>。当然，在现代高能性服务器上，<font  color='fed3a8'>通常会选择禁用SWAP</font> (详见[Swap](Swap.md))。  
+通常Linux内核还会有一个叫做khugepaged的进程，它会一直扫描所有进程占用的内存，在可能的情况下会把 4Kpage交换为Transparent HugePages，在这个过程中，对于操作的内存的各种分配活动都需要各种内存锁，直 接影响程序的内存访问性能，并且，这个过程对于应用是透明的，在应用层面不可控制，对于专门为4Kpage优化 的程序来说，可能会造成随机的性能下降现象。
+
+## <font  color='dc843f'>How 如何使用THP</font>
 ## 第1步：查看Transparent Hugepages开启
 ```
 >$ cat /sys/kernel/mm/transparent_hugepage/enabled
@@ -68,33 +83,4 @@ echo 1 > /sys/kernel/mm/transparent_hugepage/khugepaged/defrag
 
 通过`/sys/kernel/mm/transparent_hugepage/khugepaged/alloc_sleep_millisecs`控制khugepaged内部每次分配 失败时SLEEP多久再进行一下次尝试，通常不需要调整。
 
-还有一些其他参数，就不一一细讲了。
-
-## <font  color='dc843f'>Transparent HugePages的缺点</font>
-当然使用Transparent HugePages也有一些潜在问题：
-
-- 内存额外开销增加  
-当内存的一个page增加到2MB时，即使我们使用很小的一点内存时，也会消耗一个page，造成2MB的内存开销。 这样是一个page4k时的512倍。当然在现代服务器上，可以忽略不计。有时也会也会造成严重的影响，如果内存 使用的比较琐碎，造成大量2MB的page都无法真正释放，可能会造成进程使用内存过量，被OOM Killer干掉。
-
-- CPU开销  
-当Transparent HugePages的2MB的page被SWAP到磁盘时，需要被重新划分为4K的page，这时需要<font  color='fed3a8'>额外的CPU开销，以及更高的IO延时</font>。当然，在现代高能性服务器上，通常会选择禁用SWAP。  
-通常Linux内核还会有一个叫做khugepaged的进程，它会一直扫描所有进程占用的内存，在可能的情况下会把 4Kpage交换为Transparent HugePages，在这个过程中，对于操作的内存的各种分配活动都需要各种内存锁，直 接影响程序的内存访问性能，并且，这个过程对于应用是透明的，在应用层面不可控制，对于专门为4Kpage优化 的程序来说，可能会造成随机的性能下降现象。幸好的是，我们可以通过
-  ```
-  echo 0 > /sys/kernel/mm/transparent_hugepage/khugepaged/defrag 
-  echo never > /sys/kernel/mm/transparent_hugepage/defrag
-  ```
-  来关闭这个功能。
-
----
-关闭swap分区
-```
-swapoff -a
-```
-开启swap分区
-```
-swapon /dev/dm-1
-```
-查看
-```
-free -h
-```
+还有一些其他参数，详见[Transparent Hugepage Support](https://docs.kernel.org/admin-guide/mm/transhuge.html)
