@@ -3,7 +3,7 @@ DMA 代表直接内存访问。这意味着应用程序可以在 CPU 干预的�
 
 ## <font color="dc843f">Why RDMA</font>
 与正常的 TCP/IP 行为相比，数据不必多次从应用程序内存缓冲区复制到内核内存缓冲区。RDMA通过其他复制操作传递到 NIC，NIC 通过网络将其发送到其他主机。
-![alt text](rdma_vs_TCPIP.png)
+![alt text](assets/images/rdma_vs_TCPIP.png)
 
 #### <font color="dc843f">IB</font>
 InfiniBand是以太网和光纤通道的替代方案。<font color="fed3a8">IB 提供高带宽和低延迟</font>。IB 可以直接在一台计算机上的存储设备与另一台计算机上的用户空间之间传输数据，从而绕过并避免系统调用的开销。IB 适配器可以处理网络协议，这与在 CPU 上运行的以太网网络协议不同。这使得操作系统和 CPU 在进行高带宽传输时保持空闲。

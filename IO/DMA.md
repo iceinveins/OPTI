@@ -5,14 +5,14 @@
 CPU 发出对应的指令给磁盘控制器，然后返回；  
 磁盘控制器收到指令后，于是就开始准备数据，会把数据放入到磁盘控制器的内部缓冲区中，然后产生一个<font  color='fed3a8'>中断</font>；  
 CPU 收到中断信号后，停下手头的工作，接着把磁盘控制器的缓冲区的数据一次一个字节地读进自己的寄存器，然后再把寄存器里的数据写入到内存，而在数据传输的期间 CPU 是无法执行其他任务的。
-![alt text](nondma_diagram.png)
+![alt text](assets/images/nondma_diagram.png)
 
 可以看到，整个数据的传输过程，都要需要 CPU 亲自参与搬运数据的过程，而且这个过程，CPU 是不能做其他事情的。  
 简单的搬运几个字符数据那没问题，但是如果我们用千兆网卡或者硬盘传输大量数据的时候，都用 CPU 来搬运的话，肯定忙不过来。  
 计算机科学家们发现了事情的严重性后，于是就发明了 DMA 技术，也就是直接内存访问（Direct Memory Access） 技术。  
 什么是 DMA 技术？简单理解就是，<font color="fed3a8">在进行 I/O 设备和内存的数据传输的时候，数据搬运的工作全部交给 DMA 控制器，而 CPU 不再参与任何与数据搬运相关的事情，这样 CPU 就可以去处理别的事务。</font>  
 那使用 DMA 控制器进行数据传输的过程究竟是什么样的呢？下面我们来具体看看。  
-![alt text](dma_diagram.png)
+![alt text](assets/images/dma_diagram.png)
 
 具体过程：  
 用户进程调用 read 方法，向操作系统发出 I/O 请求，请求读取数据到自己的内存缓冲区中，进程进入阻塞状态；  
@@ -34,7 +34,7 @@ read(file, tmp_buf, len);
 write(socket, tmp_buf, len);
 ```
 代码很简单，虽然就两行代码，但是这里面发生了不少的事情。 
-![alt text](read_write.png)
+![alt text](assets/images/read_write.png)
 首先，期间共发生了 <font color="fed3a8">4 次用户态与内核态的上下文切换</font>，因为发生了两次系统调用，一次是 read() ，一次是 write()，每次系统调用都得先从用户态切换到内核态，等内核完成任务后，再从内核态切换回用户态。
 上下文切换到成本并不小，一次切换需要耗时几十纳秒到几微秒，虽然时间看上去很短，但是在高并发的场景下，这类时间容易被累积和放大，从而影响系统的性能。  
 其次，还发生了 <font color="fed3a8">4 次数据拷贝</font>，其中两次是 DMA 的拷贝，另外两次则是通过 CPU 拷贝的，下面说一下这个过程：
@@ -70,7 +70,7 @@ buf = mmap(file, len);
 write(sockfd, buf, len);
 ```
 mmap() 系统调用函数会直接把内核缓冲区里的数据「映射」到用户空间，这样，操作系统内核与用户空间就不需要再进行任何的数据拷贝操作。
-![alt text](mmap.png)
+![alt text](assets/images/mmap.png)
 
 具体过程如下：
 1. 应用进程调用了 
@@ -90,7 +90,7 @@ ssize_t sendfile(int out_fd, int in_fd, off_t *offset, size_t count);
 它的前两个参数分别是目的端和源端的文件描述符，后面两个参数是源端的偏移量和复制数据的长度，返回值是实际复制数据的长度。
 首先，它可以替代前面的 read() 和 write() 这两个系统调用，这样就可以减少一次系统调用，也就减少了 2 次上下文切换的开销。
 其次，该系统调用，可以直接把内核缓冲区里的数据拷贝到 socket 缓冲区里，不再拷贝到用户态，<font color="fed3a8">这样就只有 2 次上下文切换，和 3 次数据拷贝</font>。如下图：
-![alt text](sendfile.png)
+![alt text](assets/images/sendfile.png)
 
 但是这还不是真正的零拷贝技术，如果网卡支持 SG-DMA（The Scatter-Gather Direct Memory Access）技术（和普通的 DMA 有所不同），我们可以进一步减少通过 CPU 把内核缓冲区里的数据拷贝到 socket 缓冲区的过程。
 可以在Linux系统通过下面这个命令，查看网卡是否支持scatter-gather特性：
@@ -102,7 +102,7 @@ scatter-gather: on
 - 第一步，通过 DMA 将磁盘上的数据拷贝到内核缓冲区里；
 - 第二步，缓冲区描述符和数据长度传到 socket 缓冲区，这样网卡的 SG-DMA 控制器就可以直接将内核缓存中的数据拷贝到网卡的缓冲区里，此过程不需要将数据从操作系统内核缓冲区拷贝到 socket 缓冲区中，这样就减少了一次数据拷贝；
 所以，这个过程之中，<font color="fed3a8">只进行了 2 次数据拷贝</font>，如下图：
-![alt text](zerocopy.png)
+![alt text](assets/images/zerocopy.png)
 
 这就是所谓的零拷贝（Zero-copy）技术，因为我们没有在内存层面去拷贝数据，也就是说<font color="fed3a8">全程没有通过 CPU 来搬运数据，所有的数据都是通过 DMA 来进行传输的。</font>
 零拷贝技术的文件传输方式相比传统文件传输的方式，减少了 2 次上下文切换和数据拷贝次数，只需要 2 次上下文切换和数据拷贝次数，就可以完成文件的传输，而且 2 次的数据拷贝过程，都不需要通过 CPU，2 次都是由 DMA 来搬运。
