@@ -77,7 +77,7 @@ GRUB_CMDLINE_LINUX="crashkernel=auto numa=off rd.lvm.lv=centos/root rd.lvm.lv=ce
 2、重新生成 /etc/grub2.cfg 配置文件：# grub2-mkconfig -o /etc/grub2.cfg
 
 ## <font  color='dc843f'>测试 NUMA</font>
-[test_numa](test_numa.cpp)
+[test_numa](assets/test_NUMA/test_numa.cpp)
 ```
 numactl --cpubind=0 --membind=0 ./${PROJECT_ID}.elf 20000
 numactl --cpubind=0 --membind=1 ./${PROJECT_ID}.elf 20000 

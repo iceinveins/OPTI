@@ -5,7 +5,7 @@ TLS为每个线程分别地分配出独立的变量副本，用这样的方式�
 **其实如果使用得不好，反倒有可能导致伪共享这样的状况。**
 
 ---
-[tls_origin](tls_origin.cpp)
+[tls_origin](assets/TLS_alignedOrNot/tls_origin.cpp)
 
 ***原始代码问题（伪共享）:***
 ```
@@ -24,7 +24,7 @@ void thread_work_tls() {
 虽然变量是线程局部的，但不同线程的变量可能分配到相邻内存地址
 
 ---
-[tls_opti](tls_opti.cpp)
+[tls_opti](assets/TLS_alignedOrNot/tls_opti.cpp)
 
 ***优化后代码：***
 ```

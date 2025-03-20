@@ -42,7 +42,7 @@ CAS的执行结果是：
 2.反之，什么也不做；  
 CAS代表：one thread fail means one thread success.  
 比如下面这个例子，i初始0，两个线程都想把i从0更新到1。  
-![alt text](memoryOrder_1.jpg)
+![alt text](assets/images/cas.jpg)
 ```
  thread1: cas(&i,0,1);
  thread2: cas(&i,0,1);

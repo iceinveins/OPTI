@@ -3,7 +3,7 @@
 在多核处理器时代，锁竞争所付出的代价，远远超出了表面上的线程等待。真正的性能杀手被隐藏在了硬件层面——也就是缓存一致性协议（MESI）所带来的通信开销。当多个线程去争抢同一把锁的时候，每一个CPU核心都需要借助MESI协议来同步缓存行的状态。这种同步操作会致使缓存频繁失效，以及内存访问出现延迟，从而将系统性能吞噬掉。
 让我们通过一个全局锁的案例直观感受锁竞争的代价：
 
-[GlobalLock](./GlobalLock.cpp)
+[GlobalLock](assets/Lock_SegmentVsGlobal/GlobalLock.cpp)
 
 | 线程数 | 耗时 (ms) |
 | ------ | --------- |
@@ -15,7 +15,7 @@
 ## <font  color='dc843f'>分片锁的基础实现</font>
 为缓解全局锁的竞争，分片锁（Sharded Lock）是一个实用解法。其核心思想是将锁分散到多个分片，通过哈希映射将竞争分散到不同锁上。以下是分片锁的简单实现：
 
-[SegmentedLock](./SegmentedLock.cpp)
+[SegmentedLock](assets/Lock_SegmentVsGlobal/SegmentedLock.cpp)
 
 | 方法          | 线程数 | 耗时 (ms) |
 | ------------- | ------ | --------- |

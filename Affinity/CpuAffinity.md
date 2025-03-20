@@ -62,7 +62,7 @@ cpuset即用cpu_set_t结构体表示的CPU Core集合。
 函数返回0表示成功，失败则返回-1。
   
 使用示例：
-[set_affinity.hpp](..//test_utility/set_affinity.hpp)  
+[set_affinity.hpp](../test_utility/set_affinity.hpp)  
 注意：若使用到pthread，则需要将pthread.h放到sched.h之后，并在sched.h之前声明#define __USE_GNU，否则会出现undefined reference CPU_ZERO等错误。
 
 ***屏蔽硬中断（硬盘、网卡）***  
