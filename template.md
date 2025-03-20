@@ -16,3 +16,35 @@ g++ -o ${PROJECT_ID}.elf ${PROJECT_ID}.cpp -std=c++2a -latomic -lpthread -march=
 if [ $? -eq 0 ]; then
     ./${PROJECT_ID}.elf
 fi
+
+---
+keybindings.json
+```
+// Place your key bindings in this file to override the defaults
+[
+    {
+        "key": "f6",
+        "command": "editor.action.insertSnippet",
+        "args": {
+          "snippet": "# <font color=\"3d8c95\">${TM_SELECTED_TEXT}</font>$0"
+        },
+        "when": "editorTextFocus && editorHasSelection"
+    },
+    {
+        "key": "f7",
+        "command": "editor.action.insertSnippet",
+        "args": {
+          "snippet": "## <font color=\"dc843f\">${TM_SELECTED_TEXT}</font>$0"
+        },
+        "when": "editorTextFocus && editorHasSelection"
+    },
+    {
+        "key": "f8",
+        "command": "editor.action.insertSnippet",
+        "args": {
+          "snippet": "<font color=\"fed3a8\">${TM_SELECTED_TEXT}</font>$0"
+        },
+        "when": "editorTextFocus && editorHasSelection"
+    }
+]
+```
