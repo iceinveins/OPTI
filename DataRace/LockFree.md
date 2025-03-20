@@ -80,18 +80,21 @@ When Thread 1 resumes:
 
 This instruction succeeds because it finds top == ret_ptr (both are A), so it sets top to next_ptr (which is B). As B has been deleted the program will access freed memory when it tries to look at the first element on the stack. In C++, as shown here, accessing freed memory is undefined behavior: this may result in crashes, data corruption or even just silently appear to work correctly. ABA bugs such as this can be difficult to debug.
 
-<font  color='235977'> compare_exchange_weak/compare_exchange_strong是著名的CAS(compare and set)  
+<font  color='235977'> compare_exchange_weak/compare_exchange_strong  
 参数传入期待值与新值，通过比较当前值与期待值的情况进行区别改变。  
 a.compare_exchange_weak(b,c)其中a是当前值，b期望值，c新值  
 a==b时：函数返回真，并把c赋值给a  
 a!=b时：函数返回假，并把a复制给b  
 
->*函数签名*  
+*函数签名*  
+```
 bool compare_exchange_weak(T& expected, T desired, std::memory_order success, std::memory_order failure) noexcept;  
+```
 expected: A reference to the value expected to be found in the atomic object.  
 desired: The value to store in the atomic object if it is as expected.  
 success: The memory synchronization ordering for the read-modify-write operation if the comparison succeeds.  
 failure: The memory synchronization ordering for the load operation if the comparison fails.
+
 </font>
 
 **问题分析：**
