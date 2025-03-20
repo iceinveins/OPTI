@@ -3,10 +3,10 @@ NUMA （Non-uniform memory access，非一致性内存访问）架构是近代�
 
 ## <font  color='dc843f'>Why 为什么用NUMA</font>
 从硬件角度来看，如果按照以前的SMP计算机架构，多个 CPU 之间访问同一块内存，会共用一个 bus：  
-![alt text](UniformMemoryAccess.png)
+![alt text](assets/images/UniformMemoryAccess.png)
 
 但是这样一来，bus 就很可能出现性能瓶颈，导致整体性能的降低，因此就出现了 NUMA 架构：  
-![alt text](NUMA.png)
+![alt text](assets/images/NUMA.png)
 
 >简略说明  
 **SMP（多CPU平等共享相同的内存和 I/O 资源）**  
@@ -19,7 +19,7 @@ Non-NUMA，也称为UMA（Uniform Memory Access）系统所有的CPU确实通过
 将CPU划分到多个Node中，每个node有自己独立的内存空间。各个node之间通过高速互联通讯  
 CPU访问不同类型节点内存的速度是不相同的，访问本地节点的速度最快，访问远端节点的速度最慢，即访问速度与节点的距离有关，距离越远访问速度越慢，即非一致内存访问。  
 <font  color='fed3a8'>缺点：本node的内存不足时，需要垮节点访问内存，节点接的访问速度慢。</font>  
-![alt text](remote_access.png)
+![alt text](assets/images/remote_access.png)
 
 ## <font  color='dc843f'>How 如何使用NUMA</font>
 `numactl --hardware`可以查看硬件对 NUMA 的支持信息

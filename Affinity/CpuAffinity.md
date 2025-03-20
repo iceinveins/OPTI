@@ -1,6 +1,6 @@
 # <font  color='3d8c95'>Cpu Affinity与绑核</font>
 低延迟关键不在于低，而在于稳定，稳定即可预期，可掌控。谈及Linux低延迟技术时，人们经常提到“Kernel Bypass”（内核旁路），即绕过内核，这是因为<font  color='fed3a8'>内核处理不仅慢且延迟不稳定</font>。因此一个延迟要求很高的实时任务是不能触碰内核的，“避免触碰”是一个比Bypass更高的要求：不能以任何方式进入内核。中断（Interrupt）是进入内核的方式之一，本文的关键点也在于避免关键线程被中断。即使中断发生时线程是空闲的，但重新回到用户态后CPU缓存被污染了，下一次处理请求的延迟也会变得不稳定。
-![alt text](bindCpu_or_not.png)
+![alt text](assets/images/bindCpu_or_not.png)
 
 ## <font  color='dc843f'>Why 为什么用绑核</font>
 1. 减少上下文切换：频繁的上下文切换可能导致性能下降。
