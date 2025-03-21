@@ -4,7 +4,7 @@ io_uring 主要通过<font color="fed3a8">用户态与内核态共享内存</fon
 ![alt text](assets/images/io_uring_diagram.png)
 
 ## <font color="dc843f">How to use io_uring</font>
-[liburing](https://github.com/axboe/liburing)
+[liburing](https://github.com/axboe/liburing/tree/master/examples)
 
 ***系统调用***  
 io_uring 只增加了三个 Linux 系统调用分别是 `io_uring_setup`，`io_uring_enter` 和 `io_uring_register` 
@@ -114,6 +114,7 @@ for (i = 0; i < cqe_count; ++i) {
 ---
 Reference
 
+[libioring示例解析](https://arthurchiao.art/blog/intro-to-io-uring-zh/#2-io_uring)  
 [图解io_uring](https://mp.weixin.qq.com/s/1wZpFhwJR-LNkQm-QzFxRQ)  
 [实战debug](https://blog.csdn.net/u010180372/article/details/124369456)  
 [全链路异步](https://www.cnblogs.com/crazymakercircle/p/17149644.html#)  
