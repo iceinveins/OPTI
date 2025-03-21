@@ -47,7 +47,7 @@ int main() {
         std::cout << "SSE2 not supported. Quit!"  << std::endl;
         return -1;
     }
-    int num = 204800;
+    int num = 10000000;
     auto sample = GenerateDiffNumber<float>(1.0f, 1000000.0f, num);
     // A
     {
