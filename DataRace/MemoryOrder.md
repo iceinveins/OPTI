@@ -1,4 +1,4 @@
-# <font  color='3d8c95'>MemoryOrder内存顺</font>
+# <font  color='3d8c95'>MemoryOrder内存序</font>
 原子操作是比互斥锁还要low-level的同步模型，我第一次听到原子操作这个概念，是在操作系统课上，即互斥锁的加锁和解锁是原子操作。其实加锁、解锁就是在维护一个flag，该flag是原子类型，++、–要么不执行，要么一口气执行。
 
 以最简单的i++为例，cpu在执行时不是一步到位的，而是被编译成三步：load、add、store。在单线程中不成问题，但到多线程中就会出现数据丢失的情况：
@@ -252,8 +252,8 @@ typedef enum memory_order {
 之前在场景2中，因为指令的重排导致了意料之外的错误，通过使用原子变量并选择合适内存序，可以解决这个问题。下面先来看看这几种内存序
 
 ## <font  color='dc843f'>memory_order_release/memory_order_acquire</font>
-- memory_order_release用于store成员函数。简单地说，就是写不后。即，写语句不能调到本条语句之后。
-- memory_order_acquire用于load成员函数就是读不前
+- memory_order_release用于store成员函数。简单地说，就是<font color="fed3a8">写不后</font>。即，写语句不能调到本条语句之后。
+- memory_order_acquire用于load成员函数就是<font color="fed3a8">读不前</font>
 
 <font  color='fed3a8'>*release和acquire构成了synchronize-with关系*</font>，也就是同步关系。 在这个关系下：线程A中所有发生在release x之前的值的写操作， 对线程B的acquire x之后的任何操作都可见。
 
