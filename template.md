@@ -48,3 +48,14 @@ keybindings.json
     }
 ]
 ```
+
+---
+web mirror
+
+create
+```
+wget --mirror --convert-links --adjust-extension --page-requisites --no-parent https://martin.ankerl.com/2022/08/27/hashmap-bench-01/
+```
+browse
+1. vscode install LiveServer
+2. right click `index.html` -> Open with Live Server

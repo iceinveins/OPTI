@@ -1,0 +1,2880 @@
+<!DOCTYPE html>
+<html lang="en">
+<!-- Beautiful Jekyll 5.0.0 | Copyright Dean Attali 2020 -->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  
+
+  
+
+  <title>Comprehensive C++ Hashmap Benchmarks 2022</title>
+
+  
+  <meta name="author" content="Martin Leitner-Ankerl">
+  
+
+  <meta name="description" content="Where I've spent way too much time creating benchmarks of C++ hashmaps">
+
+  
+
+  
+
+  
+  <link rel="alternate" type="application/rss+xml" title="Martin Leitner-Ankerl" href="https://martin.ankerl.com/feed.xml">
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+    
+      
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+
+    
+      
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css">
+
+
+    
+      
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic">
+
+
+    
+      
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800">
+
+
+    
+  
+
+  
+    
+      <link rel="stylesheet" href="../../../../assets/css/bootstrap-social.css">
+    
+      <link rel="stylesheet" href="../../../../assets/css/beautifuljekyll.css">
+    
+  
+
+  
+
+  
+  
+  
+
+  
+
+  
+  <meta property="og:site_name" content="Martin Leitner-Ankerl">
+  <meta property="og:title" content="Comprehensive C++ Hashmap Benchmarks 2022">
+  <meta property="og:description" content="Where I've spent way too much time creating benchmarks of C++ hashmaps">
+
+  
+  <meta property="og:image" content="http://martin.ankerl.com/img/2022/wanderfalke_edit.jpg">
+  
+
+  
+  <meta property="og:type" content="article">
+  <meta property="og:article:author" content="Martin Leitner-Ankerl">
+  <meta property="og:article:published_time" content="2022-08-27T00:00:00+02:00">
+  <meta property="og:url" content="http://martin.ankerl.com/2022/08/27/hashmap-bench-01/">
+  <link rel="canonical" href="index.html">
+  
+
+  
+  <meta name="twitter:card" content="summary_large_image">
+  
+  <meta name="twitter:site" content="@sunitram">
+  <meta name="twitter:creator" content="@sunitram">
+
+  <meta property="twitter:title" content="Comprehensive C++ Hashmap Benchmarks 2022">
+  <meta property="twitter:description" content="Where I've spent way too much time creating benchmarks of C++ hashmaps">
+
+  
+  <meta name="twitter:image" content="http://martin.ankerl.com/img/2022/wanderfalke_edit.jpg">
+  
+
+  
+
+
+  
+
+  
+
+</head>
+
+
+<body>
+
+  
+
+
+  <nav class="navbar navbar-expand-xl navbar-light fixed-top navbar-custom top-nav-regular"><a class="navbar-brand" href="https://martin.ankerl.com/">Martin Leitner-Ankerl</a><button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="main-navbar">
+    <ul class="navbar-nav ml-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="https://martin.ankerl.com/">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="https://martin.ankerl.com/aboutme">About Me</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="https://keto-calculator.ankerl.com/">Keto Calculator</a>
+          </li>
+        <li class="nav-item">
+          <a class="nav-link" id="nav-search-link" href="index.html#" title="Search">
+            <span id="nav-search-icon" class="fa fa-search"></span>
+            <span id="nav-search-text">Search</span>
+          </a>
+        </li>
+</ul>
+  </div>
+
+  
+
+  
+    <div class="avatar-container">
+      <div class="avatar-img-border">
+        <a href="https://martin.ankerl.com/">
+          <img alt="Navigation bar avatar" class="avatar-img" src="../../../../img/me.jpg">
+        </a>
+      </div>
+    </div>
+  
+
+</nav>
+
+
+
+<div id="beautifuljekyll-search-overlay">
+
+  <div id="nav-search-exit" title="Exit search">✕</div>
+  <input type="text" id="nav-search-input" placeholder="Search">
+  <ul id="search-results-container"></ul>
+  
+  <script src="https://unpkg.com/simple-jekyll-search@latest/dest/simple-jekyll-search.min.js"></script>
+  <script>
+    var searchjson = '[ \
+       \
+        { \
+          "title"    : "Comprehensive C++ Hashmap Benchmarks 2022", \
+          "category" : "", \
+          "url"      : "/2022/08/27/hashmap-bench-01/", \
+          "date"     : "August 27, 2022" \
+        }, \
+       \
+        { \
+          "title"    : "Kindle Paperwhite Tips", \
+          "category" : "", \
+          "url"      : "/2019/08/23/kindle-paperwhite-tips/", \
+          "date"     : "August 23, 2019" \
+        }, \
+       \
+        { \
+          "title"    : "Hashmaps Benchmarks - Conclusion", \
+          "category" : "", \
+          "url"      : "/2019/04/01/hashmap-benchmarks-05-conclusion/", \
+          "date"     : "April  1, 2019" \
+        }, \
+       \
+        { \
+          "title"    : "Hashmaps Benchmarks - Iterating", \
+          "category" : "", \
+          "url"      : "/2019/04/01/hashmap-benchmarks-04-06-result-IterateIntegers/", \
+          "date"     : "April  1, 2019" \
+        }, \
+       \
+        { \
+          "title"    : "Hashmaps Benchmarks - Find 1 -- 1M std::string", \
+          "category" : "", \
+          "url"      : "/2019/04/01/hashmap-benchmarks-04-05-result-RandomFindString_1000000/", \
+          "date"     : "April  1, 2019" \
+        }, \
+       \
+        { \
+          "title"    : "Hashmaps Benchmarks - Find 1 -- 100k std::string", \
+          "category" : "", \
+          "url"      : "/2019/04/01/hashmap-benchmarks-04-04-result-RandomFindString/", \
+          "date"     : "April  1, 2019" \
+        }, \
+       \
+        { \
+          "title"    : "Hashmaps Benchmarks - Find 1 -- 500k uint64_t", \
+          "category" : "", \
+          "url"      : "/2019/04/01/hashmap-benchmarks-04-03-result-RandomFind_500000/", \
+          "date"     : "April  1, 2019" \
+        }, \
+       \
+        { \
+          "title"    : "Hashmaps Benchmarks - Find 1 -- 2000 uint64_t", \
+          "category" : "", \
+          "url"      : "/2019/04/01/hashmap-benchmarks-04-02-result-RandomFind_2000/", \
+          "date"     : "April  1, 2019" \
+        }, \
+       \
+        { \
+          "title"    : "Hashmaps Benchmarks - Insert &amp; Erase std::string", \
+          "category" : "", \
+          "url"      : "/2019/04/01/hashmap-benchmarks-03-04-result-RandomInsertEraseStrings/", \
+          "date"     : "April  1, 2019" \
+        }, \
+       \
+        { \
+          "title"    : "Hashmaps Benchmarks - Insert &amp; Erase uint64_t", \
+          "category" : "", \
+          "url"      : "/2019/04/01/hashmap-benchmarks-03-03-result-RandomInsertErase/", \
+          "date"     : "April  1, 2019" \
+        }, \
+       \
+        { \
+          "title"    : "Hashmaps Benchmarks - Insert &amp; Access with Varying Probability int", \
+          "category" : "", \
+          "url"      : "/2019/04/01/hashmap-benchmarks-03-02-result-RandomDistinct2/", \
+          "date"     : "April  1, 2019" \
+        }, \
+       \
+        { \
+          "title"    : "Hashmaps Benchmarks - Insert &amp; Erase 100M int", \
+          "category" : "", \
+          "url"      : "/2019/04/01/hashmap-benchmarks-03-01-result-InsertHugeInt/", \
+          "date"     : "April  1, 2019" \
+        }, \
+       \
+        { \
+          "title"    : "Hashmaps Benchmarks - Construction &amp; Insert 1 int &amp; Destruction", \
+          "category" : "", \
+          "url"      : "/2019/04/01/hashmap-benchmarks-02-02-result-CtorDtorSingleEntryMap/", \
+          "date"     : "April  1, 2019" \
+        }, \
+       \
+        { \
+          "title"    : "Hashmaps Benchmarks - Construction &amp; Destruction", \
+          "category" : "", \
+          "url"      : "/2019/04/01/hashmap-benchmarks-02-01-result-CtorDtorEmptyMap/", \
+          "date"     : "April  1, 2019" \
+        }, \
+       \
+        { \
+          "title"    : "Hashmaps Benchmarks - Overview", \
+          "category" : "", \
+          "url"      : "/2019/04/01/hashmap-benchmarks-01-overview/", \
+          "date"     : "April  1, 2019" \
+        }, \
+       \
+        { \
+          "title"    : "Fast Random bool in C++", \
+          "category" : "", \
+          "url"      : "/2018/12/08/fast-random-bool/", \
+          "date"     : "December  8, 2018" \
+        }, \
+       \
+        { \
+          "title"    : "Visualizing Bitcoin&#39;s Unspent Transaction Output", \
+          "category" : "", \
+          "url"      : "/2018/09/20/bitcoin-unspent-transaction-outputs-graph/", \
+          "date"     : "September 20, 2018" \
+        }, \
+       \
+        { \
+          "title"    : "Free Secure Web: Jekyll &amp; Github Pages &amp; Cloudflare", \
+          "category" : "", \
+          "url"      : "/2017/07/22/free-secure-web-jekyll-github-pages-cloudflare/", \
+          "date"     : "July 22, 2017" \
+        }, \
+       \
+        { \
+          "title"    : "Ruby to Dot - Graph any Class Hierarchy", \
+          "category" : "", \
+          "url"      : "/2017/07/22/ruby-to-dot/", \
+          "date"     : "July 22, 2017" \
+        }, \
+       \
+        { \
+          "title"    : "Essential Linux Dev Stuff", \
+          "category" : "", \
+          "url"      : "/2017/05/09/essential-linux-dev-stuff/", \
+          "date"     : "May  9, 2017" \
+        }, \
+       \
+        { \
+          "title"    : "Visual Studio C++ 2015 Compiler Bug", \
+          "category" : "", \
+          "url"      : "/2017/02/28/visual-studio-c-2015-compiler-bug/", \
+          "date"     : "February 28, 2017" \
+        }, \
+       \
+        { \
+          "title"    : "Linux Bash Prompt", \
+          "category" : "", \
+          "url"      : "/2016/11/04/linux-bash-prompt/", \
+          "date"     : "November  4, 2016" \
+        }, \
+       \
+        { \
+          "title"    : "Very Fast HashMap in C++: Benchmark Results (Part 3)", \
+          "category" : "", \
+          "url"      : "/2016/09/21/very-fast-hashmap-in-c-part-3/", \
+          "date"     : "September 21, 2016" \
+        }, \
+       \
+        { \
+          "title"    : "Very Fast HashMap in C++: Implementation Variants (Part 2)", \
+          "category" : "", \
+          "url"      : "/2016/09/21/very-fast-hashmap-in-c-part-2/", \
+          "date"     : "September 21, 2016" \
+        }, \
+       \
+        { \
+          "title"    : "Very Fast HashMap in C++: Hopscotch &amp; Robin Hood Hashing (Part 1)", \
+          "category" : "", \
+          "url"      : "/2016/09/15/very-fast-hashmap-in-c-part-1/", \
+          "date"     : "September 15, 2016" \
+        }, \
+       \
+        { \
+          "title"    : "Analyzing Keto Calculator Demographics", \
+          "category" : "", \
+          "url"      : "/2016/06/06/analyzing-keto-calculator-demographics/", \
+          "date"     : "June  6, 2016" \
+        }, \
+       \
+        { \
+          "title"    : "Google Analytics Experiments is Buggy", \
+          "category" : "", \
+          "url"      : "/2016/01/22/google-analytics-experiments-is-buggy/", \
+          "date"     : "January 22, 2016" \
+        }, \
+       \
+        { \
+          "title"    : "Body Fat Comparison Pictures", \
+          "category" : "", \
+          "url"      : "/2016/01/04/body-fat-comparison-pictures/", \
+          "date"     : "January  4, 2016" \
+        }, \
+       \
+        { \
+          "title"    : "Beautiful Git Logs", \
+          "category" : "", \
+          "url"      : "/2015/12/22/beautiful-git-logs/", \
+          "date"     : "December 22, 2015" \
+        }, \
+       \
+        { \
+          "title"    : "Bin Picking", \
+          "category" : "", \
+          "url"      : "/2014/06/16/bin-picking/", \
+          "date"     : "June 16, 2014" \
+        }, \
+       \
+        { \
+          "title"    : "Via Ferrata Drachenwand 2013", \
+          "category" : "", \
+          "url"      : "/2014/06/16/via-ferrata-drachenwand-2013/", \
+          "date"     : "June 16, 2014" \
+        }, \
+       \
+        { \
+          "title"    : "Calculate How Much Of What You Should Eat", \
+          "category" : "keto", \
+          "url"      : "/2012/11/14/calculate-how-much-of-what-you-should-eat/", \
+          "date"     : "November 14, 2012" \
+        }, \
+       \
+        { \
+          "title"    : "Actioncam Videos", \
+          "category" : "", \
+          "url"      : "/2012/07/28/actioncam-videos/", \
+          "date"     : "July 28, 2012" \
+        }, \
+       \
+        { \
+          "title"    : "Cholesterol and Heart Disease", \
+          "category" : "", \
+          "url"      : "/2012/06/24/cholesterol-and-heart-disease/", \
+          "date"     : "June 24, 2012" \
+        }, \
+       \
+        { \
+          "title"    : "FreeArc Compression Settings", \
+          "category" : "", \
+          "url"      : "/2012/06/07/freearc-compression-settings/", \
+          "date"     : "June  7, 2012" \
+        }, \
+       \
+        { \
+          "title"    : "Your Brain on a Ketogenic Diet", \
+          "category" : "keto", \
+          "url"      : "/2012/06/07/your-brain-on-a-ketogenic-diet/", \
+          "date"     : "June  7, 2012" \
+        }, \
+       \
+        { \
+          "title"    : "ReconstructMe Public Beta", \
+          "category" : "", \
+          "url"      : "/2012/02/25/reconstructme-public-beta/", \
+          "date"     : "February 25, 2012" \
+        }, \
+       \
+        { \
+          "title"    : "Optimized Approximative pow() in C / C++", \
+          "category" : "", \
+          "url"      : "/2012/01/25/optimized-approximative-pow-in-c-and-cpp/", \
+          "date"     : "January 25, 2012" \
+        }, \
+       \
+        { \
+          "title"    : "Chunky bacon", \
+          "category" : "", \
+          "url"      : "/2012/01/15/chunky-bacon/", \
+          "date"     : "January 15, 2012" \
+        }, \
+       \
+        { \
+          "title"    : "Low Carb High Fat -- Big Video Roundup", \
+          "category" : "", \
+          "url"      : "/2012/01/15/low-carb-high-fat-big-video-roundup/", \
+          "date"     : "January 15, 2012" \
+        }, \
+       \
+        { \
+          "title"    : "Relative Risk for Dummies", \
+          "category" : "", \
+          "url"      : "/2012/01/06/relative-risk-for-dummies/", \
+          "date"     : "January  6, 2012" \
+        }, \
+       \
+        { \
+          "title"    : "Health &amp; Software Engineering", \
+          "category" : "", \
+          "url"      : "/2012/01/04/health-software-engineering/", \
+          "date"     : "January  4, 2012" \
+        }, \
+       \
+        { \
+          "title"    : "Quickly Solving the &quot;Instagram Engineering Challenge: The Unshredder&quot;", \
+          "category" : "", \
+          "url"      : "/2011/11/15/solving-the-instagram-challenge-quickly/", \
+          "date"     : "November 15, 2011" \
+        }, \
+       \
+        { \
+          "title"    : "Here is a quick list of application…", \
+          "category" : "", \
+          "url"      : "/2011/10/13/here-is-a-quick-list-of-application/", \
+          "date"     : "October 13, 2011" \
+        }, \
+       \
+        { \
+          "title"    : "Single N-Back", \
+          "category" : "android", \
+          "url"      : "/2011/09/30/single-n-back/", \
+          "date"     : "September 30, 2011" \
+        }, \
+       \
+        { \
+          "title"    : "Download Bitcoin Logos", \
+          "category" : "", \
+          "url"      : "/2011/06/13/download-bitcoin-logos/", \
+          "date"     : "June 13, 2011" \
+        }, \
+       \
+        { \
+          "title"    : "Smallest working QR Code", \
+          "category" : "", \
+          "url"      : "/2011/06/06/smallest-working-qr-code/", \
+          "date"     : "June  6, 2011" \
+        }, \
+       \
+        { \
+          "title"    : "Looking for something new?", \
+          "category" : "", \
+          "url"      : "/2011/04/30/looking-for-something-new/", \
+          "date"     : "April 30, 2011" \
+        }, \
+       \
+        { \
+          "title"    : "Cleverness Considered Harmful", \
+          "category" : "", \
+          "url"      : "/2010/12/10/cleverness-considered-harmful/", \
+          "date"     : "December 10, 2010" \
+        }, \
+       \
+        { \
+          "title"    : "svn-shortlog -- Compact &amp; Beautiful Subversion Changelog", \
+          "category" : "", \
+          "url"      : "/2009/12/23/svn-shortlog-compact-beautiful-subversion-changelog/", \
+          "date"     : "December 23, 2009" \
+        }, \
+       \
+        { \
+          "title"    : "How to Generate Random Colors Programmatically", \
+          "category" : "", \
+          "url"      : "/2009/12/09/how-to-create-random-colors-programmatically/", \
+          "date"     : "December  9, 2009" \
+        }, \
+       \
+        { \
+          "title"    : "How To: Download Any Flash Video with flashrip in Ubuntu", \
+          "category" : "", \
+          "url"      : "/2009/11/15/how-to-download-any-flash-video-with-flashrip-in-ubuntu/", \
+          "date"     : "November 15, 2009" \
+        }, \
+       \
+        { \
+          "title"    : "iRob Feeder in Action (Video)", \
+          "category" : "", \
+          "url"      : "/2009/11/13/irob-feeder-in-action-video/", \
+          "date"     : "November 13, 2009" \
+        }, \
+       \
+        { \
+          "title"    : "Online Password Encrypter for Apache", \
+          "category" : "", \
+          "url"      : "/2009/05/22/online-password-encrypter-for-apache/", \
+          "date"     : "May 22, 2009" \
+        }, \
+       \
+        { \
+          "title"    : "Scientific Approach to Green Tea Preparation", \
+          "category" : "", \
+          "url"      : "/2009/05/13/scientific-approach-to-green-tea-prepreation/", \
+          "date"     : "May 13, 2009" \
+        }, \
+       \
+        { \
+          "title"    : "Java Challenge - The Mysterious Method Wrapper", \
+          "category" : "", \
+          "url"      : "/2009/04/16/java-challenge-the-mysterious-method-wrapper/", \
+          "date"     : "April 16, 2009" \
+        }, \
+       \
+        { \
+          "title"    : "Beautiful Font Hinting in Ubuntu 8.10 and 9.04", \
+          "category" : "", \
+          "url"      : "/2009/01/22/beautiful-font-hinting-in-ubuntu-810/", \
+          "date"     : "January 22, 2009" \
+        }, \
+       \
+        { \
+          "title"    : "Java 1.5 Collections Hierarchy Graph", \
+          "category" : "", \
+          "url"      : "/2009/01/05/java-15-collections-hierarchy-graph/", \
+          "date"     : "January  5, 2009" \
+        }, \
+       \
+        { \
+          "title"    : "Approximation of sqrt(x) in Java", \
+          "category" : "", \
+          "url"      : "/2009/01/05/approximation-of-sqrtx-in-java/", \
+          "date"     : "January  5, 2009" \
+        }, \
+       \
+        { \
+          "title"    : "Why the Zune crashes?", \
+          "category" : "", \
+          "url"      : "/2008/12/31/why-the-zune-crashes/", \
+          "date"     : "December 31, 2008" \
+        }, \
+       \
+        { \
+          "title"    : "Top 10 Posts of 2008", \
+          "category" : "", \
+          "url"      : "/2008/12/27/top-10-posts-of-2008/", \
+          "date"     : "December 27, 2008" \
+        }, \
+       \
+        { \
+          "title"    : "Ripping Multilanguage DVDs with Subtitles using Mencoder", \
+          "category" : "", \
+          "url"      : "/2008/12/25/ripping-multilanguage-dvds-with-subtitles-using-only-mencoder/", \
+          "date"     : "December 25, 2008" \
+        }, \
+       \
+        { \
+          "title"    : "Amazing Caching Proxy in Java", \
+          "category" : "", \
+          "url"      : "/2008/12/22/amazing-caching-proxy-in-java/", \
+          "date"     : "December 22, 2008" \
+        }, \
+       \
+        { \
+          "title"    : "Human Compact Themes (for Ubuntu 8.10)", \
+          "category" : "", \
+          "url"      : "/2008/11/04/human-compact-themes-for-ubuntu-810/", \
+          "date"     : "November  4, 2008" \
+        }, \
+       \
+        { \
+          "title"    : "How to Make a Compact Gnome Theme", \
+          "category" : "", \
+          "url"      : "/2008/10/11/how-to-make-a-compact-gnome-theme/", \
+          "date"     : "October 11, 2008" \
+        }, \
+       \
+        { \
+          "title"    : "Create High Quality Flash Videos in Ubuntu", \
+          "category" : "", \
+          "url"      : "/2008/10/04/create-high-quality-flash-videos-in-ubuntu/", \
+          "date"     : "October  4, 2008" \
+        }, \
+       \
+        { \
+          "title"    : "Via Ferrata Teufelsteig", \
+          "category" : "", \
+          "url"      : "/2008/09/29/via-ferretta-teufelsteig/", \
+          "date"     : "September 29, 2008" \
+        }, \
+       \
+        { \
+          "title"    : "ActionCam Damberg Kriterium", \
+          "category" : "bikecyclingprofactor", \
+          "url"      : "/2008/08/30/actioncam-damberg-kriterium/", \
+          "date"     : "August 30, 2008" \
+        }, \
+       \
+        { \
+          "title"    : "Two Word Anagram Finder Algorithm (in Ruby)", \
+          "category" : "programmingruby", \
+          "url"      : "/2008/08/09/two-word-anagram-finder-algorithm/", \
+          "date"     : "August  9, 2008" \
+        }, \
+       \
+        { \
+          "title"    : "Job Interview Question: Sorting Records", \
+          "category" : "", \
+          "url"      : "/2008/05/27/job-interview-question-sorting-records/", \
+          "date"     : "May 27, 2008" \
+        }, \
+       \
+        { \
+          "title"    : "Human Compact Gnome Theme (for Ubuntu 8.04)", \
+          "category" : "", \
+          "url"      : "/2008/05/13/human-compact-gnome-theme/", \
+          "date"     : "May 13, 2008" \
+        }, \
+       \
+        { \
+          "title"    : "Clearlooks Compact Update", \
+          "category" : "", \
+          "url"      : "/2008/04/12/clearlooks-compact-update/", \
+          "date"     : "April 12, 2008" \
+        }, \
+       \
+        { \
+          "title"    : "Netvibes Search Widgets Updated", \
+          "category" : "netvibesupdatesUWAwidgets", \
+          "url"      : "/2008/04/12/netvibes-search-widgets-updated/", \
+          "date"     : "April 12, 2008" \
+        }, \
+       \
+        { \
+          "title"    : "Netvibes Widgets for JDK and OSS Search", \
+          "category" : "gingernetvibessearchwidgets", \
+          "url"      : "/2008/03/18/netvibes-widgets-for-jdk-and-oss-search/", \
+          "date"     : "March 18, 2008" \
+        }, \
+       \
+        { \
+          "title"    : "Logical Volume Manager Cheatsheet", \
+          "category" : "howtolinuxtutorialubuntu", \
+          "url"      : "/2008/02/05/logical-volume-manager-cheatsheet/", \
+          "date"     : "February  5, 2008" \
+        }, \
+       \
+        { \
+          "title"    : "Howto Get Enough Sleep Despite StumbleUpon with Ubuntu", \
+          "category" : "crongetsomesleephowtolifehacklinuxubuntu", \
+          "url"      : "/2008/01/24/howto-get-enough-sleep-despite-stumbleupon-with-ubuntu/", \
+          "date"     : "January 24, 2008" \
+        }, \
+       \
+        { \
+          "title"    : "Recovering from Hack", \
+          "category" : "hackedhomepageupgradewordpress", \
+          "url"      : "/2008/01/23/recovering-from-hack/", \
+          "date"     : "January 23, 2008" \
+        }, \
+       \
+        { \
+          "title"    : "Get More Space Out of Your ext3 Partition", \
+          "category" : "ext3harddiskhowtolinuxtrickubuntuwastedspace", \
+          "url"      : "/2008/01/12/get-more-space-out-of-your-ext3-partition/", \
+          "date"     : "January 12, 2008" \
+        }, \
+       \
+        { \
+          "title"    : "Up, Up and Away!", \
+          "category" : "barcelonasouth africaspaintravel", \
+          "url"      : "/2007/11/27/up-up-and-away/", \
+          "date"     : "November 27, 2007" \
+        }, \
+       \
+        { \
+          "title"    : "Major Clearlooks Compact Update", \
+          "category" : "clearlooksgtklinuxthemeubuntu", \
+          "url"      : "/2007/11/11/clearlooks-compact-11/", \
+          "date"     : "November 11, 2007" \
+        }, \
+       \
+        { \
+          "title"    : "Compact Theme Update", \
+          "category" : "clearlooksgtkthemeubuntu", \
+          "url"      : "/2007/11/07/compact-theme-update/", \
+          "date"     : "November  7, 2007" \
+        }, \
+       \
+        { \
+          "title"    : "Clearlooks Compact Gnome Theme", \
+          "category" : "clearlookscomparisongtklinuxreleasethemeubuntu", \
+          "url"      : "/2007/11/04/clearlooks-compact-gnome-theme/", \
+          "date"     : "November  4, 2007" \
+        }, \
+       \
+        { \
+          "title"    : "New Release of XDCC-Fetch", \
+          "category" : "freewarereleaserubyxdccxdcc-fetch", \
+          "url"      : "/2007/11/04/new-release-of-xdcc-fetch/", \
+          "date"     : "November  4, 2007" \
+        }, \
+       \
+        { \
+          "title"    : "New Release of Dice-RPG", \
+          "category" : "Dice-RPGfreewarereleaseRPGruby", \
+          "url"      : "/2007/11/04/new-release-of-dice-rpg/", \
+          "date"     : "November  4, 2007" \
+        }, \
+       \
+        { \
+          "title"    : "Howto Change Ubuntu Forced fsck", \
+          "category" : "boot speedfsckharddiskhowtotune2fsubuntu", \
+          "url"      : "/2007/11/03/howto-change-ubuntu-forced-fsck/", \
+          "date"     : "November  3, 2007" \
+        }, \
+       \
+        { \
+          "title"    : "Optimized pow() approximation for Java, C / C++, and C#", \
+          "category" : "C++floating pointjavaoptimizationprogramming", \
+          "url"      : "/2007/10/04/optimized-pow-approximation-for-java-and-c-c/", \
+          "date"     : "October  4, 2007" \
+        }, \
+       \
+        { \
+          "title"    : "Climbing the Donnerkogel Klettersteig", \
+          "category" : "climbingpicturestravel", \
+          "url"      : "/2007/09/23/climbing-the-donnerkogel-klettersteig/", \
+          "date"     : "September 23, 2007" \
+        }, \
+       \
+        { \
+          "title"    : "Comprehensive Linux Terminal Performance Comparison", \
+          "category" : "benchmarkcomparisonlinuxperformanceterminalubuntu", \
+          "url"      : "/2007/09/01/comprehensive-linux-terminal-performance-comparison/", \
+          "date"     : "September  1, 2007" \
+        }, \
+       \
+        { \
+          "title"    : "Javadoc Search Engine Updated", \
+          "category" : "googlejavajdksearch engine", \
+          "url"      : "/2007/08/22/javadoc-search-engine-updated/", \
+          "date"     : "August 22, 2007" \
+        }, \
+       \
+        { \
+          "title"    : "Ajax Dojo Comet Tutorial", \
+          "category" : "ajaxcometdojohowtoprogrammingtutorial", \
+          "url"      : "/2007/08/21/ajax-dojo-comet-tutorial/", \
+          "date"     : "August 21, 2007" \
+        }, \
+       \
+        { \
+          "title"    : "Java Developer Kit (JDK) Search Engine", \
+          "category" : "googlejavajdksearch engine", \
+          "url"      : "/2007/07/20/java-developer-kit-jdk-search-engine/", \
+          "date"     : "July 20, 2007" \
+        }, \
+       \
+        { \
+          "title"    : "Top 10 Posts of 2007", \
+          "category" : "blogmartin.ankerl.compoststop 10", \
+          "url"      : "/2007/07/11/top-10-posts-at-martinankerlcom/", \
+          "date"     : "July 11, 2007" \
+        }, \
+       \
+        { \
+          "title"    : "Project Development Phases", \
+          "category" : "funproject developmentquote", \
+          "url"      : "/2007/06/05/project-development-phases/", \
+          "date"     : "June  5, 2007" \
+        }, \
+       \
+        { \
+          "title"    : "Erlang Syntax Highlighting", \
+          "category" : "editorerlanggeditprogrammingsyntax highlighting", \
+          "url"      : "/2007/05/06/erlang-syntax-highlighting/", \
+          "date"     : "May  6, 2007" \
+        }, \
+       \
+        { \
+          "title"    : "How to Install Anything in Ubuntu Condensed", \
+          "category" : "howtoinstalllinuxubuntu", \
+          "url"      : "/2007/04/19/how-to-install-anything-in-ubuntu-condensed/", \
+          "date"     : "April 19, 2007" \
+        }, \
+       \
+        { \
+          "title"    : "RFind - Quickly Find Files", \
+          "category" : "freewarereleaseRFindruby", \
+          "url"      : "/2007/04/01/rfind-quickly-find-files/", \
+          "date"     : "April  1, 2007" \
+        }, \
+       \
+        { \
+          "title"    : "TextAnalyzer in Python", \
+          "category" : "", \
+          "url"      : "/2007/03/29/textanalyzer-in-python/", \
+          "date"     : "March 29, 2007" \
+        }, \
+       \
+        { \
+          "title"    : "e — New Release of Extract Any Archive", \
+          "category" : "", \
+          "url"      : "/2007/02/25/e-new-release-of-extract-any-archive/", \
+          "date"     : "February 25, 2007" \
+        }, \
+       \
+        { \
+          "title"    : "Exponential Functions: Benchmarks, 8 Times Faster Math.pow()", \
+          "category" : "approximationbenchmarkjavamathpow", \
+          "url"      : "/2007/02/12/exponential-functions-benchmarks-11-times-faster-mathpow/", \
+          "date"     : "February 12, 2007" \
+        }, \
+       \
+        { \
+          "title"    : "Optimized Exponential Functions for Java", \
+          "category" : "", \
+          "url"      : "/2007/02/11/optimized-exponential-functions-for-java/", \
+          "date"     : "February 11, 2007" \
+        }, \
+       \
+        { \
+          "title"    : "Open Source Search Engine", \
+          "category" : "coopgoogleopen sourcesearch engine", \
+          "url"      : "/2007/02/08/open-source-search-engine/", \
+          "date"     : "February  8, 2007" \
+        }, \
+       \
+        { \
+          "title"    : "TextAnalyzer - Automatically Extract Characteristic Words", \
+          "category" : "characteristic wordsprogrammingrubytextanalyzer", \
+          "url"      : "/2007/01/09/textanalyzer-automatically-extract-characteristic-words/", \
+          "date"     : "January  9, 2007" \
+        }, \
+       \
+        { \
+          "title"    : "Three Laws of Software Development", \
+          "category" : "lawsprogrammingrant", \
+          "url"      : "/2007/01/05/three-laws-of-software-development/", \
+          "date"     : "January  5, 2007" \
+        }, \
+       \
+        { \
+          "title"    : "Statistical Unit Tests with ensure4j", \
+          "category" : "ensure4jjavajunitprogrammingstatisticstdd", \
+          "url"      : "/2007/01/04/statistical-unit-tests-with-ensure4j/", \
+          "date"     : "January  4, 2007" \
+        }, \
+       \
+        { \
+          "title"    : "e updated", \
+          "category" : "eextractrelease", \
+          "url"      : "/2006/12/10/program-e-updated/", \
+          "date"     : "December 10, 2006" \
+        }, \
+       \
+        { \
+          "title"    : "The Best Educational Videos", \
+          "category" : "", \
+          "url"      : "/2006/12/08/educational-videos/", \
+          "date"     : "December  8, 2006" \
+        }, \
+       \
+        { \
+          "title"    : "Homepage Relocated", \
+          "category" : "", \
+          "url"      : "/2006/12/06/homepage-relocated/", \
+          "date"     : "December  6, 2006" \
+        }, \
+       \
+        { \
+          "title"    : "Jeans Team — Das Zelt", \
+          "category" : "", \
+          "url"      : "/2006/08/30/jeans-team-das-zelt/", \
+          "date"     : "August 30, 2006" \
+        }, \
+       \
+        { \
+          "title"    : "How To Make Firefox Over 40% Faster", \
+          "category" : "", \
+          "url"      : "/2006/08/16/how-to-make-firefox-40-percent-faster/", \
+          "date"     : "August 16, 2006" \
+        }, \
+       \
+        { \
+          "title"    : "e - Extract Any Archive", \
+          "category" : "", \
+          "url"      : "/2006/08/11/program-e-extract-any-archive/", \
+          "date"     : "August 11, 2006" \
+        }, \
+       \
+        { \
+          "title"    : "Redesigning JUnit Asserts", \
+          "category" : "", \
+          "url"      : "/2006/08/02/redesigning-junit-asserts/", \
+          "date"     : "August  2, 2006" \
+        }, \
+       \
+        { \
+          "title"    : "Behaviour Driven Development", \
+          "category" : "", \
+          "url"      : "/2006/08/02/behaviour-driven-development/", \
+          "date"     : "August  2, 2006" \
+        }, \
+       \
+        { \
+          "title"    : "CoreWars Simulators Overview", \
+          "category" : "", \
+          "url"      : "/2006/07/29/corwars-simulators-overview/", \
+          "date"     : "July 29, 2006" \
+        }, \
+       \
+        { \
+          "title"    : "Advertisements", \
+          "category" : "", \
+          "url"      : "/2006/07/28/advertisements/", \
+          "date"     : "July 28, 2006" \
+        }, \
+       \
+        { \
+          "title"    : "Top 10 Eclipse Hotkeys", \
+          "category" : "", \
+          "url"      : "/2006/07/20/top-10-eclipse-hotkeys/", \
+          "date"     : "July 20, 2006" \
+        }, \
+       \
+        { \
+          "title"    : "Self-hosting Subversion Configuration", \
+          "category" : "", \
+          "url"      : "/2006/07/16/self-hosting-subversion-configuration/", \
+          "date"     : "July 16, 2006" \
+        }, \
+       \
+        { \
+          "title"    : "LZMA Compression in Linux", \
+          "category" : "", \
+          "url"      : "/2006/06/22/lzma-compression-in-linux/", \
+          "date"     : "June 22, 2006" \
+        }, \
+       \
+        { \
+          "title"    : "Exception Handling versus Logging", \
+          "category" : "", \
+          "url"      : "/2006/06/16/exception-handling-versus-logging/", \
+          "date"     : "June 16, 2006" \
+        }, \
+       \
+        { \
+          "title"    : "CoreWars", \
+          "category" : "", \
+          "url"      : "/2006/06/12/corewars/", \
+          "date"     : "June 12, 2006" \
+        }, \
+       \
+        { \
+          "title"    : "Pimp My MPlayer", \
+          "category" : "", \
+          "url"      : "/2006/06/10/pimp-my-mplayer/", \
+          "date"     : "June 10, 2006" \
+        }, \
+       \
+        { \
+          "title"    : "Compact Subversion Backups", \
+          "category" : "", \
+          "url"      : "/2006/05/31/compact-subversion-backups/", \
+          "date"     : "May 31, 2006" \
+        }, \
+       \
+        { \
+          "title"    : "Particle Swarm Optimization", \
+          "category" : "", \
+          "url"      : "/2006/05/01/particle-swarm-optimization/", \
+          "date"     : "May  1, 2006" \
+        }, \
+       \
+        { \
+          "title"    : "New Domain!", \
+          "category" : "", \
+          "url"      : "/2006/04/23/new-domain/", \
+          "date"     : "April 23, 2006" \
+        }, \
+       \
+        { \
+          "title"    : "Copy Protection", \
+          "category" : "", \
+          "url"      : "/2006/03/26/copy-protection/", \
+          "date"     : "March 26, 2006" \
+        }, \
+       \
+        { \
+          "title"    : "Java vs. Ruby", \
+          "category" : "", \
+          "url"      : "/2006/03/08/java-vs-ruby/", \
+          "date"     : "March  8, 2006" \
+        }, \
+       \
+        { \
+          "title"    : "Tracer Bullet Development versus Extreme Programming", \
+          "category" : "", \
+          "url"      : "/2006/03/03/tracer-bullet-development-versus-extreme-programming/", \
+          "date"     : "March  3, 2006" \
+        }, \
+       \
+        { \
+          "title"    : "KDE Style Window Dragging for XP / Win2k", \
+          "category" : "", \
+          "url"      : "/2006/02/16/kde-style-window-dragging-for-xp-win2k/", \
+          "date"     : "February 16, 2006" \
+        }, \
+       \
+        { \
+          "title"    : "Software Design Principles", \
+          "category" : "", \
+          "url"      : "/2006/01/25/software-design-principles/", \
+          "date"     : "January 25, 2006" \
+        }, \
+       \
+        { \
+          "title"    : "Svnadmin Dump And Load Over SSH", \
+          "category" : "", \
+          "url"      : "/2006/01/24/svnadmin-dump-and-load-over-ssh/", \
+          "date"     : "January 24, 2006" \
+        }, \
+       \
+        { \
+          "title"    : "How To Read a Paper", \
+          "category" : "", \
+          "url"      : "/2006/01/24/how-to-read-a-paper/", \
+          "date"     : "January 24, 2006" \
+        }, \
+       \
+        { \
+          "title"    : "Subversion Guideline", \
+          "category" : "", \
+          "url"      : "/2006/01/24/subversion-guideline/", \
+          "date"     : "January 24, 2006" \
+        }, \
+       \
+        { \
+          "title"    : "My First Research Project", \
+          "category" : "", \
+          "url"      : "/2006/01/23/my-first-research-project/", \
+          "date"     : "January 23, 2006" \
+        }, \
+       \
+        { \
+          "title"    : "Google Ads", \
+          "category" : "", \
+          "url"      : "/2006/01/21/google-ads/", \
+          "date"     : "January 21, 2006" \
+        }, \
+       \
+        { \
+          "title"    : "How to Find Research Papers Efficiently", \
+          "category" : "", \
+          "url"      : "/2006/01/18/how-to-find-research-papers-efficiently/", \
+          "date"     : "January 18, 2006" \
+        }, \
+       \
+        { \
+          "title"    : "Fxri Maintainer Wanted", \
+          "category" : "", \
+          "url"      : "/2006/01/17/fxri-maintainer-wanted/", \
+          "date"     : "January 17, 2006" \
+        }, \
+       \
+        { \
+          "title"    : "Google Videos", \
+          "category" : "", \
+          "url"      : "/2006/01/11/google-videos/", \
+          "date"     : "January 11, 2006" \
+        }, \
+       \
+        { \
+          "title"    : "A Bit More Information", \
+          "category" : "", \
+          "url"      : "/2005/12/21/a-bit-more-information/", \
+          "date"     : "December 21, 2005" \
+        }, \
+       \
+        { \
+          "title"    : "Google Books Search Hack", \
+          "category" : "", \
+          "url"      : "/2005/12/06/google-books-search-hack/", \
+          "date"     : "December  6, 2005" \
+        }, \
+       \
+        { \
+          "title"    : "How to Design Large Erlang Systems", \
+          "category" : "", \
+          "url"      : "/2005/12/04/how-to-design-large-erlang-systems/", \
+          "date"     : "December  4, 2005" \
+        }, \
+       \
+        { \
+          "title"    : "How to Teach Programming", \
+          "category" : "", \
+          "url"      : "/2005/12/04/how-to-teach-programming/", \
+          "date"     : "December  4, 2005" \
+        }, \
+       \
+        { \
+          "title"    : "HOWTO Create MANIFEST.MF Classpath From Ant", \
+          "category" : "", \
+          "url"      : "/2005/11/30/howto-create-manifestmf-classpath-from-ant/", \
+          "date"     : "November 30, 2005" \
+        }, \
+       \
+        { \
+          "title"    : "How To Introduce a Wiki", \
+          "category" : "", \
+          "url"      : "/2005/11/30/how-to-introduce-a-wiki/", \
+          "date"     : "November 30, 2005" \
+        }, \
+       \
+        { \
+          "title"    : "If You Have a Problem, Crash.", \
+          "category" : "", \
+          "url"      : "/2005/11/26/if-you-have-a-problem-crash/", \
+          "date"     : "November 26, 2005" \
+        }, \
+       \
+        { \
+          "title"    : "Finding eBooks with Google", \
+          "category" : "", \
+          "url"      : "/2005/11/25/finding-ebooks-with-google/", \
+          "date"     : "November 25, 2005" \
+        }, \
+       \
+        { \
+          "title"    : "Screen (Linux Tool)", \
+          "category" : "", \
+          "url"      : "/2005/11/17/screen-linux-tool/", \
+          "date"     : "November 17, 2005" \
+        }, \
+       \
+        { \
+          "title"    : "Subversion Propset Script 2.0", \
+          "category" : "", \
+          "url"      : "/2005/11/07/subversion-propset-script-20/", \
+          "date"     : "November  7, 2005" \
+        }, \
+       \
+        { \
+          "title"    : "Documentation has to Scale", \
+          "category" : "", \
+          "url"      : "/2005/09/25/documentation-has-to-scale/", \
+          "date"     : "September 25, 2005" \
+        }, \
+       \
+        { \
+          "title"    : "DVD to WAV, DVD to OGG", \
+          "category" : "", \
+          "url"      : "/2005/09/24/dvd-to-wav-dvd-to-ogg/", \
+          "date"     : "September 24, 2005" \
+        }, \
+       \
+        { \
+          "title"    : "Subversion Propset Script", \
+          "category" : "", \
+          "url"      : "/2005/09/24/subversion-propset-script/", \
+          "date"     : "September 24, 2005" \
+        }, \
+       \
+        { \
+          "title"    : "Who Is Martin Ankerl?", \
+          "category" : "", \
+          "url"      : "/2005/09/22/who-is-martin-ankerl/", \
+          "date"     : "September 22, 2005" \
+        }, \
+       \
+        { \
+          "title"    : "Secure SSH, CVS, SCP without Password Prompt", \
+          "category" : "", \
+          "url"      : "/2005/09/22/secure-ssh-cvs-scp-without-password-prompt/", \
+          "date"     : "September 22, 2005" \
+        }, \
+       \
+        { \
+          "title"    : "LaTeX Tips &amp; Tricks", \
+          "category" : "", \
+          "url"      : "/2005/09/22/latex-tips-tricks/", \
+          "date"     : "September 22, 2005" \
+        }, \
+       \
+        { \
+          "title"    : "svnlog2html", \
+          "category" : "", \
+          "url"      : "/2005/09/22/svnlog2html/", \
+          "date"     : "September 22, 2005" \
+        }, \
+       \
+        { \
+          "title"    : "DoNoFo", \
+          "category" : "", \
+          "url"      : "/2005/09/22/donofo/", \
+          "date"     : "September 22, 2005" \
+        }, \
+       \
+        { \
+          "title"    : "Ruby Programming Challenge", \
+          "category" : "", \
+          "url"      : "/2005/09/22/ruby-programming-challenge/", \
+          "date"     : "September 22, 2005" \
+        }, \
+       \
+        { \
+          "title"    : "Getting into Shape", \
+          "category" : "", \
+          "url"      : "/2005/09/21/getting-into-shape/", \
+          "date"     : "September 21, 2005" \
+        }, \
+       \
+        { \
+          "title"    : "Design?", \
+          "category" : "", \
+          "url"      : "/2005/09/21/design/", \
+          "date"     : "September 21, 2005" \
+        }, \
+       \
+        { \
+          "title"    : "Extra! Extra!", \
+          "category" : "", \
+          "url"      : "/2005/09/20/extra-extra/", \
+          "date"     : "September 20, 2005" \
+        }, \
+       \
+       \
+        { \
+          "title"    : "About me", \
+          "category" : "page", \
+          "url"      : "/aboutme/", \
+          "date"     : "January 1, 1970" \
+        }, \
+       \
+        { \
+          "title"    : "Martin Leitner&amp;#8209;Ankerl", \
+          "category" : "page", \
+          "url"      : "/", \
+          "date"     : "January 1, 1970" \
+        }, \
+       \
+        { \
+          "title"    : "Tag Index", \
+          "category" : "page", \
+          "url"      : "/tags/", \
+          "date"     : "January 1, 1970" \
+        }, \
+       \
+        { \
+          "title"    : "Up and running locally", \
+          "category" : "page", \
+          "url"      : "/install/", \
+          "date"     : "January 1, 1970" \
+        }, \
+       \
+        { \
+          "title"    : "Martin Leitner&amp;#8209;Ankerl", \
+          "category" : "page", \
+          "url"      : "/page2/", \
+          "date"     : "January 1, 1970" \
+        }, \
+       \
+        { \
+          "title"    : "Martin Leitner&amp;#8209;Ankerl", \
+          "category" : "page", \
+          "url"      : "/page3/", \
+          "date"     : "January 1, 1970" \
+        }, \
+       \
+        { \
+          "title"    : "Martin Leitner&amp;#8209;Ankerl", \
+          "category" : "page", \
+          "url"      : "/page4/", \
+          "date"     : "January 1, 1970" \
+        }, \
+       \
+        { \
+          "title"    : "Martin Leitner&amp;#8209;Ankerl", \
+          "category" : "page", \
+          "url"      : "/page5/", \
+          "date"     : "January 1, 1970" \
+        }, \
+       \
+        { \
+          "title"    : "Martin Leitner&amp;#8209;Ankerl", \
+          "category" : "page", \
+          "url"      : "/page6/", \
+          "date"     : "January 1, 1970" \
+        }, \
+       \
+        { \
+          "title"    : "Martin Leitner&amp;#8209;Ankerl", \
+          "category" : "page", \
+          "url"      : "/page7/", \
+          "date"     : "January 1, 1970" \
+        }, \
+       \
+        { \
+          "title"    : "Martin Leitner&amp;#8209;Ankerl", \
+          "category" : "page", \
+          "url"      : "/page8/", \
+          "date"     : "January 1, 1970" \
+        } \
+       \
+    ]';
+    searchjson = JSON.parse(searchjson);
+
+    var sjs = SimpleJekyllSearch({
+      searchInput: document.getElementById('nav-search-input'),
+      resultsContainer: document.getElementById('search-results-container'),
+      json: searchjson
+    });
+  </script>
+</div>
+
+
+
+
+
+  <!-- TODO this file has become a mess, refactor it -->
+
+
+
+
+
+
+  <div id="header-big-imgs" data-num-img="1" data-img-src-1="http://martin.ankerl.com/img/2022/wanderfalke_edit.jpg"></div>
+
+
+<header class="header-section has-img">
+
+<div class="big-img intro-header">
+  <div class="container-md">
+    <div class="row">
+      <div class="col-xl-8 offset-xl-2 col-lg-10 offset-lg-1">
+        <div class="post-heading">
+          <h1>Comprehensive C++ Hashmap Benchmarks 2022</h1>
+          
+            
+              <h2 class="post-subheading">Where I've spent way too much time creating benchmarks of C++ hashmaps</h2>
+            
+          
+
+          
+            <span class="post-meta">Posted on August 27, 2022</span>
+            
+            
+          
+        </div>
+      </div>
+    </div>
+  </div>
+  <span class="img-desc"></span>
+</div>
+
+<div class="intro-header no-img">
+  <div class="container-md">
+    <div class="row">
+      <div class="col-xl-8 offset-xl-2 col-lg-10 offset-lg-1">
+        <div class="post-heading">
+          <h1>Comprehensive C++ Hashmap Benchmarks 2022</h1>
+          
+            
+              <h2 class="post-subheading">Where I've spent way too much time creating benchmarks of C++ hashmaps</h2>
+            
+          
+
+          
+            <span class="post-meta">Posted on August 27, 2022</span>
+            
+            
+          
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</header>
+
+
+
+
+
+<div class=" container-md ">
+  <div class="row">
+    <div class=" col-xl-8 offset-xl-2 col-lg-10 offset-lg-1 ">
+
+      
+
+      
+
+      <article role="main" class="blog-post">
+        <p>It’s been over 3 years since I’ve spent considerable time finding <a href="https://martin.ankerl.com/2019/04/01/hashmap-benchmarks-01-overview/">the best C++ hashmap</a>. After several requests I finally gave in and redid the benchmark with state of C++ hashmaps as of August 2022. This took much more work than I initially anticipated, mostly due to the fact that benchmarks take a looong time, and writing everything up and creating a representation that is actually useful takes even more time. Thanks everyone who
+annoyingly kept asking me for updates <img class="emoji" title=":wink:" alt=":wink:" src="https://github.githubassets.com/images/icons/emoji/unicode/1f609.png" height="20" width="20"></p>
+
+<blockquote>
+  <p>TL;DR: <a href="index.html#benchmark-results-table">Here are the benchmark results!</a></p>
+</blockquote>
+
+<h1 id="table-of-contents-">Table of Contents <!-- omit in toc -->
+</h1>
+
+<ul>
+  <li>
+<a href="index.html#benchmark-infrastructure">Benchmark Infrastructure</a>
+    <ul>
+      <li><a href="index.html#hardware">Hardware</a></li>
+      <li><a href="index.html#software">Software</a></li>
+    </ul>
+  </li>
+  <li>
+<a href="index.html#benchmarks">Benchmarks</a>
+    <ul>
+      <li><a href="index.html#stable-references">Stable References</a></li>
+      <li>
+<a href="index.html#modifying-numbers-benchmarks">Modifying Numbers Benchmarks</a>
+        <ul>
+          <li><a href="index.html#copy">Copy</a></li>
+          <li><a href="index.html#insert-then-erase-100m-int">Insert then Erase 100M int</a></li>
+          <li><a href="index.html#random-insert--access-uint64_t">Random Insert &amp; Access uint64_t</a></li>
+          <li><a href="index.html#random-insert--erase-uint64_t">Random Insert &amp; Erase uint64_t</a></li>
+        </ul>
+      </li>
+      <li>
+<a href="index.html#access--find-benchmarks">Access &amp; Find Benchmarks</a>
+        <ul>
+          <li><a href="index.html#iterate">Iterate</a></li>
+          <li><a href="index.html#find-1--200-uint64_t">Find 1 – 200 uint64_t</a></li>
+          <li><a href="index.html#find-1--2000-uint64_t">Find 1 – 2000 uint64_t</a></li>
+          <li><a href="index.html#find-1--500k-uint64_t">Find 1 – 500k uint64_t</a></li>
+        </ul>
+      </li>
+      <li>
+<a href="index.html#modifying-string-benchmarks">Modifying String Benchmarks</a>
+        <ul>
+          <li><a href="index.html#random-insert--erase-string">Random Insert &amp; Erase string</a></li>
+        </ul>
+      </li>
+      <li>
+<a href="index.html#find-string-benchmarks">Find String Benchmarks</a>
+        <ul>
+          <li><a href="index.html#find-1--100k-string">Find 1 – 100k string</a></li>
+          <li><a href="index.html#find-1--1m-string">Find 1 – 1M string</a></li>
+        </ul>
+      </li>
+      <li>
+<a href="index.html#other">Other</a>
+        <ul>
+          <li><a href="index.html#memory-usage">Memory Usage</a></li>
+        </ul>
+      </li>
+      <li>
+<a href="index.html#combined-results">Combined Results</a>
+        <ul>
+          <li><a href="index.html#geometric-mean-number-find">Geometric Mean Number Find</a></li>
+          <li><a href="index.html#geometric-mean-string-find">Geometric Mean String Find</a></li>
+          <li><a href="index.html#geometric-mean-all">Geometric Mean All</a></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li><a href="index.html#benchmark-results-table">Benchmark Results Table</a></li>
+  <li>
+<a href="index.html#result-analysis">Result Analysis</a>
+    <ul>
+      <li>
+<a href="index.html#containers">Containers</a>
+        <ul>
+          <li><a href="index.html#abslflat_hash_map-">absl::flat_hash_map ↑</a></li>
+          <li><a href="index.html#abslnode_hash_map-">absl::node_hash_map ↑</a></li>
+          <li><a href="index.html#ankerlunordered_densemap-">ankerl::unordered_dense::map ↑</a></li>
+          <li><a href="index.html#boostmulti_indexhashed_unique-">boost::multi_index::hashed_unique ↑</a></li>
+          <li><a href="index.html#boostunordered_map-">boost::unordered_map ↑</a></li>
+          <li><a href="index.html#boostunordered_map--poolallocator-">boost::unordered_map &amp; PoolAllocator ↑</a></li>
+          <li><a href="index.html#boostunordered_map--boostcontainerpmrunsynchronized_pool_resource-">boost::unordered_map &amp; boost::container::pmr::unsynchronized_pool_resource ↑</a></li>
+          <li><a href="index.html#emhash7hashmap-">emhash7::HashMap ↑</a></li>
+          <li><a href="index.html#emhash8hashmap-">emhash8::HashMap ↑</a></li>
+          <li><a href="index.html#follyf14nodemap-">folly::F14NodeMap ↑</a></li>
+          <li><a href="index.html#follyf14valuemap-">folly::F14ValueMap ↑</a></li>
+          <li><a href="index.html#fphdynamicfphmap-">fph::DynamicFphMap ↑</a></li>
+          <li><a href="index.html#gtlbtree_map-">gtl::btree_map ↑</a></li>
+          <li><a href="index.html#gtlflat_hash_map-">gtl::flat_hash_map ↑</a></li>
+          <li><a href="index.html#gtlnode_hash_map-">gtl::node_hash_map ↑</a></li>
+          <li><a href="index.html#gtlparallel_flat_hash_map-">gtl::parallel_flat_hash_map ↑</a></li>
+          <li><a href="index.html#gtlparallel_node_hash_map-">gtl::parallel_node_hash_map ↑</a></li>
+          <li><a href="index.html#jgdense_hash_map-">jg::dense_hash_map ↑</a></li>
+          <li><a href="index.html#robin_hoodunordered_flat_map-">robin_hood::unordered_flat_map ↑</a></li>
+          <li><a href="index.html#robin_hoodunordered_node_map-">robin_hood::unordered_node_map ↑</a></li>
+          <li><a href="index.html#skabytell_hash_map-">ska::bytell_hash_map ↑</a></li>
+          <li><a href="index.html#skaflat_hash_map-">ska::flat_hash_map ↑</a></li>
+          <li><a href="index.html#sppsparse_hash_map-">spp::sparse_hash_map ↑</a></li>
+          <li><a href="index.html#stdunordered_map-">std::unordered_map ↑</a></li>
+          <li><a href="index.html#stdunordered_map--poolallocator-">std::unordered_map &amp; PoolAllocator ↑</a></li>
+          <li><a href="index.html#stdunordered_map--stdpmrunsynchronized_pool_resource-">std::unordered_map &amp; std::pmr::unsynchronized_pool_resource ↑</a></li>
+          <li><a href="index.html#tslhopscotch_map-">tsl::hopscotch_map ↑</a></li>
+          <li><a href="index.html#tslrobin_map-">tsl::robin_map ↑</a></li>
+          <li><a href="index.html#tslsparse_map-">tsl::sparse_map ↑</a></li>
+        </ul>
+      </li>
+      <li>
+<a href="index.html#hashes">Hashes</a>
+        <ul>
+          <li><a href="index.html#stdhash-">std::hash ↑</a></li>
+          <li><a href="index.html#boosthash-">boost::hash ↑</a></li>
+          <li><a href="index.html#abslhash-">absl::Hash ↑</a></li>
+          <li><a href="index.html#ankerlunordered_densehash-">ankerl::unordered_dense::hash ↑</a></li>
+          <li><a href="index.html#robin_hoodhash-">robin_hood::hash ↑</a></li>
+          <li><a href="index.html#mumx-">mumx ↑</a></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li><a href="index.html#conclusion">Conclusion</a></li>
+  <li><a href="index.html#errata">Errata</a></li>
+</ul>
+
+<p>This time I have evaluated 29 different hashmaps, and also added several variants with special allocators. Each of these was combined with 6 differend hashes, resulting in 174 different combinations to benchmark. Each of these combinations was evaluated in 11 different benchmarks, totaling in 1914 benchmark evaluations. This almost doubles the number of benchmarks from my evaluation in 2019.</p>
+
+<h1 id="benchmark-infrastructure">Benchmark Infrastructure</h1>
+
+<h2 id="hardware">Hardware</h2>
+<ul>
+  <li>All benchmarks ran on an Intel i7-8700, locked at 3200 MHz.</li>
+  <li>The benchmarks ran on an <a href="https://pyperf.readthedocs.io/en/latest/system.html">isolated core dedicated to benchmarking</a>
+</li>
+  <li>I disabled frequency scaling and turbo boost.</li>
+  <li>the PC was kept completely idle otherwise while running the benchmarks.</li>
+</ul>
+
+<h2 id="software">Software</h2>
+
+<ul>
+  <li>I used Manjaro Linux with an up to date kernel.</li>
+  <li>All benchmarks are done with clang++ 13, which at that time was the default compiler on Manjaro Linux.</li>
+  <li>I used the compile flags <code class="language-plaintext highlighter-rouge">-O3 -march=native</code>.</li>
+  <li>Each benchmark was run multiple times, and I’m using the median to get rid of any potential outliers.</li>
+</ul>
+
+<h1 id="benchmarks">Benchmarks</h1>
+
+<h2 id="stable-references">Stable References</h2>
+
+<p>The hashmaps can be divided into two types: ones where the inserted elements always reside at the same location, thus pointers &amp; references to the elements are stable, and ones where elements can be shuffled around. This is usually the case in open address hashing.</p>
+
+<p>Hashmaps with no reference stability tend to be faster because they can usually get rid of one memory indirection and can better optimize for cache locality and allocations.</p>
+
+<h2 id="modifying-numbers-benchmarks">Modifying Numbers Benchmarks</h2>
+
+<h3 id="copy">Copy</h3>
+
+<p>This benchmark first creates a map <code class="language-plaintext highlighter-rouge">uint64_t</code> → <code class="language-plaintext highlighter-rouge">uint64_t</code> with 1M random entries. 
+This map is then copied 200 times into a brand new map, and copied 200 times into an existing map.</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">for</span> <span class="p">(</span><span class="kt">size_t</span> <span class="n">n</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="mi">200</span><span class="p">;</span> <span class="o">++</span><span class="n">n</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">Map</span><span class="o">&lt;</span><span class="kt">uint64_t</span><span class="p">,</span> <span class="kt">uint64_t</span><span class="o">&gt;</span> <span class="n">m</span> <span class="o">=</span> <span class="n">mapForCopy</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="n">Map</span><span class="o">&lt;</span><span class="kt">uint64_t</span><span class="p">,</span> <span class="kt">uint64_t</span><span class="o">&gt;</span> <span class="n">m</span><span class="p">;</span>
+<span class="k">for</span> <span class="p">(</span><span class="kt">size_t</span> <span class="n">n</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="mi">200</span><span class="p">;</span> <span class="o">++</span><span class="n">n</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="n">mapForCopy</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>There is some minor modification steps added so the compiler can’t optimize the copy away. <a href="https://github.com/martinus/map_benchmark/blob/master/src/benchmarks/Copy.cpp">Full sourcecode of Copy</a>.</p>
+
+<h3 id="insert-then-erase-100m-int">Insert then Erase 100M int</h3>
+
+<p>This benchmarks bulk insertion and bulk erase:</p>
+
+<ol>
+  <li>Insert 100 million random <code class="language-plaintext highlighter-rouge">int</code> into a <code class="language-plaintext highlighter-rouge">Map&lt;int, int&gt;</code>.</li>
+  <li>Clear all entries with <code class="language-plaintext highlighter-rouge">clear()</code>.</li>
+  <li>Reinsert 100 million random <code class="language-plaintext highlighter-rouge">int</code> into the same cleared map.</li>
+  <li>Remove all of the inserted entries one by one until the map is empty again.</li>
+  <li>Destruct the empty map.</li>
+</ol>
+
+<p>100 million int-int pairs take at least 1526 MB. It is interesting to see how much overhead the maps have here, and how they deal with resizing their data. <code class="language-plaintext highlighter-rouge">clear()</code> is interesting too, for flat maps it might be possible to optimize for data that is trivially destructible, then clear() can be very fast. Reinsertion is interesting to see if a map reuses initialized memory, and if it can gain any speed from that. Removing elements one by one is interesting to see removal performance - some maps need to rearrange entries (e.g. robin-hood based maps) which might slow down their performance.</p>
+
+<h3 id="random-insert--access-uint64_t">Random Insert &amp; Access uint64_t</h3>
+
+<p>This inserts random elements into a map, but with bounded random numbers. The bencharked loop looks like this:</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">Map</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span> <span class="kt">int</span><span class="o">&gt;</span> <span class="n">map</span><span class="p">;</span>
+<span class="k">for</span> <span class="p">(</span><span class="kt">size_t</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">50'000'000</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">checksum</span> <span class="o">+=</span> <span class="o">++</span><span class="n">map</span><span class="p">[</span><span class="n">rng</span><span class="p">(</span><span class="n">max_rng</span><span class="p">)];</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>I is an adapted benchmark from attractivechaos’ <a href="https://attractivechaos.wordpress.com/2018/01/13/revisiting-hash-table-performance/">Revisiting hash table performance</a> code.</p>
+
+<p>Here <code class="language-plaintext highlighter-rouge">rng(max_rng)</code> creates a random number in the range [0, max_rng(. If max_rng is small, not many elements will be inserted but most of them will be accessed. If max_rng is large, mostly new elements will be inserted.</p>
+
+<p>In fact the benchmark is run 4 times, with different max_rng settings:</p>
+
+<ul>
+  <li>5% distinct: <code class="language-plaintext highlighter-rouge">max_rng = 50M * 5% = 250k</code>, so many values will be duplicates. After 50 million iterations, all 250k elements are inserted. So most map operations will be accesses.</li>
+  <li>25% distinct: <code class="language-plaintext highlighter-rouge">max_rng = 50M * 25% = 12.5M</code>. More inserts, less modifications.</li>
+  <li>50% distinct: <code class="language-plaintext highlighter-rouge">max_rng = 50M * 50% = 25M</code>. Note that due to randomness not all numbers from 0-25M will be inserted. Here the final map’s size contains 21.6M entries. So actually its about 43% of the value range instead of 50%.</li>
+  <li>100% distinct: Here we make use of the full range of <code class="language-plaintext highlighter-rouge">int</code>, so 2^32 numbers are available. Practically all operations are new insertions.</li>
+</ul>
+
+<h3 id="random-insert--erase-uint64_t">Random Insert &amp; Erase uint64_t</h3>
+
+<p>The core of the benchmark is this loop:</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">Map</span><span class="o">&lt;</span><span class="kt">uint64_t</span><span class="p">,</span> <span class="kt">uint64_t</span><span class="o">&gt;</span> <span class="n">map</span><span class="p">;</span>
+<span class="k">for</span> <span class="p">(</span><span class="kt">size_t</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">50'000'000</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">map</span><span class="p">.</span><span class="n">emplace</span><span class="p">(</span><span class="n">rng</span><span class="p">()</span> <span class="o">&amp;</span> <span class="n">bitMask</span><span class="p">,</span> <span class="n">i</span><span class="p">);</span>
+    <span class="n">map</span><span class="p">.</span><span class="n">erase</span><span class="p">(</span><span class="n">rng</span><span class="p">()</span> <span class="o">&amp;</span> <span class="n">bitMask</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>On first glance it looks similar to the previous benchmark, but it bechmarks something completely different. Each iteration it randomly inserts an element, and then randomly erases an element. Instead of using a maximum number for the random number generator, here I am using a bit mask to extract several bits. The purpose of this is to ensure the maps work still well, even when numbers are not sequentially or small and don’t always change in the lower bits.</p>
+
+<p>This benchmark loop is repeated 6 times. Initially, 4 random bits are set in bitMask. After each benchmark 4 additional bits are set, thus the number of available random numbers increases and the map will find a larger equilibrium. Here is the list of bitMasks used in the benchmark:</p>
+
+<ol>
+  <li>
+<code class="language-plaintext highlighter-rouge">1001000000000000000000000000000000000000000100000000000000001000</code> 4 bits set, 16 distinct numbers. Equilibrium will be around 16/2 = 8 entries, so the map stays very small.</li>
+  <li>
+<code class="language-plaintext highlighter-rouge">1001000000000010001100000000000000000000000101000000000000001000</code> 8 bits set, 256 distinct numbers. Averaging 128 entries.</li>
+  <li>
+<code class="language-plaintext highlighter-rouge">1001000000000110001100000000000000010000000101100000000000001001</code> 12 bits set, 4096 distinct numbers, averaging 2048 entries</li>
+  <li>
+<code class="language-plaintext highlighter-rouge">1001000000000110001100000001000000010000000101110000000100101001</code> 16 bits set, 65k distinct numbers, 32.8k entries equilibrium.</li>
+  <li>
+<code class="language-plaintext highlighter-rouge">1101100000000110001100001001000000010000000101110001000100101001</code> 20 bits set, 1M distinct numbers, 524k entries equilibrium.</li>
+  <li>
+<code class="language-plaintext highlighter-rouge">1101100000001110001100001001001000010000100101110001000100101011</code> 24 bits set, 16.8M distinct numbers, 8.4M entries equilibrium.</li>
+</ol>
+
+<p>So the map’s average size increases by a factor of 16 each benchmark. Ideally a hashmap has O(1) amortized operations, so the speed should be constant regardless the size. This is unfortunately not the case, mostly due to lots and lots of cache misses the larger you get.</p>
+
+<h2 id="access--find-benchmarks">Access &amp; Find Benchmarks</h2>
+
+<h3 id="iterate">Iterate</h3>
+
+<p>Iteration benchmark works like this: I create a <code class="language-plaintext highlighter-rouge">Map&lt;uint64_t, uint64_t&gt;</code>,  and each time I insert one random element the whole map is iterated. Once 50k elements are inserted, elements are removed one by one and each time the map is iterated again. In total, exactly 2.5 billion entries are iterated.</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">Map</span><span class="o">&lt;</span><span class="kt">uint64_t</span><span class="p">,</span> <span class="kt">uint64_t</span><span class="o">&gt;</span> <span class="n">map</span><span class="p">;</span>
+
+<span class="k">auto</span> <span class="k">const</span> <span class="n">initialRngState</span> <span class="o">=</span> <span class="n">rng</span><span class="p">.</span><span class="n">state</span><span class="p">();</span>
+
+<span class="c1">// measure insert than iterate whole map</span>
+<span class="k">for</span> <span class="p">(</span><span class="kt">size_t</span> <span class="n">n</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="n">num_iters</span><span class="p">;</span> <span class="o">++</span><span class="n">n</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">map</span><span class="p">[</span><span class="n">rng</span><span class="p">()]</span> <span class="o">=</span> <span class="n">n</span><span class="p">;</span>
+    <span class="k">for</span> <span class="p">(</span><span class="k">auto</span> <span class="k">const</span><span class="o">&amp;</span> <span class="n">keyVal</span> <span class="o">:</span> <span class="n">map</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">result</span> <span class="o">+=</span> <span class="n">keyVal</span><span class="p">.</span><span class="n">second</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// reset rng back to inital state</span>
+<span class="n">rng</span><span class="p">.</span><span class="n">state</span><span class="p">(</span><span class="n">initialRngState</span><span class="p">);</span>
+
+<span class="c1">// measure erase than iterate whole map</span>
+<span class="k">for</span> <span class="p">(</span><span class="kt">size_t</span> <span class="n">n</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="n">num_iters</span><span class="p">;</span> <span class="o">++</span><span class="n">n</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">map</span><span class="p">.</span><span class="n">erase</span><span class="p">(</span><span class="n">rng</span><span class="p">());</span>
+    <span class="k">for</span> <span class="p">(</span><span class="k">auto</span> <span class="k">const</span><span class="o">&amp;</span> <span class="n">keyVal</span> <span class="o">:</span> <span class="n">map</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">result</span> <span class="o">+=</span> <span class="n">keyVal</span><span class="p">.</span><span class="n">second</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="find-1--200-uint64_t">Find 1 – 200 uint64_t</h3>
+
+<p>In many use cases <code class="language-plaintext highlighter-rouge">find</code> performance is probably considered the most important benchmark. This benchmark was tricky to implement, as it should be as unbiased as possible. It does the following:</p>
+
+<ul>
+  <li>Lookup with different probability of being found: 0%, 25%, 50%, 75%, and 100% success ratio, to measure get a broad spectrum of lookup probability.</li>
+  <li>Lookups with different amount of data in the map, to make sure we have a wide range of fullness factors.</li>
+  <li>Lookups with different bitmasks of the entry, to make sure we are not biased towards small numbers.</li>
+</ul>
+
+<p>In detail, it works this way:</p>
+
+<ol>
+  <li>Each iteration, 4 random entries are created in a <code class="language-plaintext highlighter-rouge">Map&lt;size_t, size_t&gt;</code>. Depending on the desired lookup probability, 0, 1, 2, 3, or all 4 entries will be chosen either from a unique random number generator, or one with the same initial seed used for the lookups. Additionally, the order of these 4 entries is shuffled to introduce even more randomness.</li>
+  <li>After insertion, a number of lookups are performed, and when an entry is found it’s value is accessed.</li>
+  <li>Repeat until the map is full.</li>
+</ol>
+
+<p>Here, we perform 5 million lookups for every 4 inserts, until the map contains 200 elements.</p>
+
+<h3 id="find-1--2000-uint64_t">Find 1 – 2000 uint64_t</h3>
+
+<p>Same as benchmark <strong>Find 1 - 200 uint64_t</strong>, but with 500k lookups every 4 inserts until the map contains 2000 entries.</p>
+
+<h3 id="find-1--500k-uint64_t">Find 1 – 500k uint64_t</h3>
+
+<p>Same as benchmark <strong>Find 1 - 200 uint64_t</strong>, but with 1000 lookups every 4 inserts until the map contains 500k entries. Note that there is a overhead measured with the find benchmark, namely inserting. In my tests this overhead is minimal and negligable to find results. E.g. for <code class="language-plaintext highlighter-rouge">jg::dense_hash_map</code> which has very fast find and very slow inserts, the overhead is only ~0.49%.</p>
+
+<h2 id="modifying-string-benchmarks">Modifying String Benchmarks</h2>
+
+<h3 id="random-insert--erase-string">Random Insert &amp; Erase string</h3>
+
+<p>This benchmark is very similar to <strong>Random Insert &amp; Erase uint64_t</strong>. It constantly inserts and removes random strings. The benchmark is run with different sizes of <code class="language-plaintext highlighter-rouge">std::string</code>: 7, 8, 13, 100, and 1000 bytes. Each time a string is inserted or queried, only the last few bytes are modified. That means if two hashes of the string are the same, <code class="language-plaintext highlighter-rouge">std::equal</code> will have to check quite a few bytes, especially for longer strings. Since comparisons and hashing takes much longer for longer strings, I have adapted the runtime for each benchmark:</p>
+
+<ul>
+  <li>7 bytes: 20M iterations</li>
+  <li>8 bytes: 20M iterations</li>
+  <li>13 bytes: 20M iterations</li>
+  <li>100 bytes: 12M iterations</li>
+  <li>1000 bytes: 6M iteratons</li>
+</ul>
+
+<p>The benchmark code looks like this. It takes great care that the random string is not unnecessarily copied or recreated.</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="nf">str</span><span class="p">(</span><span class="n">string_length</span><span class="p">,</span> <span class="sc">'x'</span><span class="p">);</span>
+
+<span class="n">Map</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span> <span class="n">map</span><span class="p">;</span>
+<span class="k">for</span> <span class="p">(</span><span class="kt">size_t</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">max_n</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>    
+    <span class="c1">// create an entry.</span>
+    <span class="n">randomize</span><span class="p">(</span><span class="n">str</span><span class="p">);</span>
+    <span class="n">map</span><span class="p">[</span><span class="n">str</span><span class="p">];</span>
+
+    <span class="c1">// find and erase entry.</span>
+    <span class="n">randomize</span><span class="p">(</span><span class="n">str</span><span class="p">);</span>
+    <span class="k">auto</span> <span class="n">it</span> <span class="o">=</span> <span class="n">map</span><span class="p">.</span><span class="n">find</span><span class="p">(</span><span class="n">str</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">it</span> <span class="o">!=</span> <span class="n">map</span><span class="p">.</span><span class="n">end</span><span class="p">())</span> <span class="p">{</span>
+        <span class="o">++</span><span class="n">verifier</span><span class="p">;</span>
+        <span class="n">map</span><span class="p">.</span><span class="n">erase</span><span class="p">(</span><span class="n">it</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="find-string-benchmarks">Find String Benchmarks</h2>
+
+<h3 id="find-1--100k-string">Find 1 – 100k string</h3>
+
+<p>This benchmark is practically the same as the uint64_t find benchmarks, except that it uses 100 byte long <code class="language-plaintext highlighter-rouge">std::string</code>. There are 1000 lookups every 4 inserts, until 100k entries are inserted.</p>
+
+<h3 id="find-1--1m-string">Find 1 – 1M string</h3>
+
+<p>Same as <strong>Find 1 - 100k string</strong>, but with 13 bytes long strings, 200 lookups every 4 inserts until 1M strings are in the map.</p>
+
+<h2 id="other">Other</h2>
+
+<h3 id="memory-usage">Memory Usage</h3>
+
+<p>Each benchmark is run in a separate process, and I measure the peak resident set size for each benchmark. The number presented here calculates the geometric mean of the two very memory-heavy benchmarks, <strong>Insert then Erase 100M int</strong> and <strong>Random Insert &amp; Erase uint64_t</strong>.</p>
+
+<p>Flat maps tend to have a bad maximum memory behavior, because whenever data has to be relocated they allocate a temporary array that’s twice the size of the existing data, then move data over to the new array, and after that they erase the memory.</p>
+
+<p>So for a fill factor of 80%, the worst case for peak memory usage (Insert one element after the map is full) is <code class="language-plaintext highlighter-rouge">m = numElements / 0.8 * 3</code>, which gives an overhead of 275%.</p>
+
+<h2 id="combined-results">Combined Results</h2>
+
+<h3 id="geometric-mean-number-find">Geometric Mean Number Find</h3>
+
+<p>The geometric mean of the number related find benchmarks
+<strong>Find 1 – 200 uint64_t</strong>, <strong>Find 1 – 2000 uint64_t</strong>, <strong>Find 1 – 500k uint64_t</strong>. Thus, if you only care about search performance for integral types, this is your most important result.</p>
+
+<h3 id="geometric-mean-string-find">Geometric Mean String Find</h3>
+
+<p>The geometric mean of <code class="language-plaintext highlighter-rouge">std::string</code> find benchmarks <strong>Find 1 – 100k string</strong>, <strong>Find 1 – 1M string</strong>. If searching for <code class="language-plaintext highlighter-rouge">std::string</code> is all you care about, look at the top results here.</p>
+
+<h3 id="geometric-mean-all">Geometric Mean All</h3>
+
+<p>The geometric mean of all benchmarks, including memory usage. If you are interested overall speed in a wide range of scenarios, have a look at the top results here.</p>
+
+<h1 id="benchmark-results-table">Benchmark Results Table</h1>
+
+<p>Each column shows benchmark runtime normalized to 100 for the best performer. So 100 means fastest (or lowest memory), 110 means 10% slower than the fastest. The last 3 rows show summarized results. Click a row for sorting, enter text in map/hash field for filtering.</p>
+
+<link href="https://unpkg.com/tabulator-tables/dist/css/tabulator_semanticui.min.css" rel="stylesheet">
+
+<script type="text/javascript" src="https://unpkg.com/tabulator-tables/dist/js/tabulator.min.js"></script>
+
+<style>
+.tabulator .tabulator-header .tabulator-col.tabulator-sortable[aria-sort="ascending"] {
+  background-color: #DAE1E7;
+}
+.tabulator .tabulator-header .tabulator-col.tabulator-sortable[aria-sort="descending"] {
+  background-color: #DAE1E7;
+}
+.tabulator.compact.very .tabulator-tableholder .tabulator-table .tabulator-row .tabulator-cell {
+  padding:.4em .1em
+}
+.martinus_big_table {
+  width: 90vw;
+  position: relative;
+  left: calc(-45vw + 50%);
+}
+.martinus_highlight {
+    font-weight: bolder;
+}
+</style>
+
+<p><a name="table"></a></p>
+<div id="table_map_benchmark" class="martinus_big_table ui very compact black celled table"></div>
+
+<script type="text/javascript" src="../../../../files/2022/map_benchmark.js"></script>
+
+<h1 id="result-analysis">Result Analysis</h1>
+
+<h2 id="containers">Containers</h2>
+
+<p><a name="absl__flat_hash_map"></a></p>
+
+<h3 id="abslflat_hash_map-">absl::flat_hash_map <a href="index.html#table">↑</a>
+</h3>
+
+<p>Google’s Abseil’s <code class="language-plaintext highlighter-rouge">absl::flat_hash_map</code> stores <code class="language-plaintext highlighter-rouge">value_type</code> directly in the slot array, and Google recommends these for general use. They were brand new in 2019 and pushed the boundary on what’s possible to achieve for unordered_maps. It uses several interesting optimizations, described in <a href="https://www.youtube.com/watch?v=ncHmEUmJZf4">CppCon 2017: Matt Kulukundis “Designing a Fast, Efficient, Cache-friendly Hash Table, Step by Step</a>.</p>
+
+<dl>
+  <dt>The Good</dt>
+  <dd>3 years ago <code class="language-plaintext highlighter-rouge">absl::flat_hash_map</code> was one of the fastest maps. It still is quite fast, and seems to perform especially well for large maps. This map and <code class="language-plaintext highlighter-rouge">gtl::flat_hash_map</code>, which is based on that map, are the fastest in the <strong>Find 1 – 500k uint64_t</strong> benchmark. Other find benchmarks are reasonably fast too, especially for strings.</dd>
+  <dt>The Bad</dt>
+  <dd>Copying and iterating the map is comparatively slow. The map is highly sensitive to the used hash, and benchmarks are incredibly slow (timeout) when bad hash is used. E.g. <code class="language-plaintext highlighter-rouge">std::hash</code> or <code class="language-plaintext highlighter-rouge">boost::hash</code> for number types.</dd>
+  <dt>About</dt>
+  <dd>Website: <a href="https://abseil.io/docs/cpp/guides/container">https://abseil.io/docs/cpp/guides/container</a>, Tested version: <a href="https://github.com/abseil/abseil-cpp">736458b5 (master)</a>, License: <code class="language-plaintext highlighter-rouge">Apache License 2.0</code>
+</dd>
+</dl>
+
+<p><a name="absl__node_hash_map"></a></p>
+
+<h3 id="abslnode_hash_map-">absl::node_hash_map <a href="index.html#table">↑</a>
+</h3>
+
+<p>Google’s <a href="https://abseil.io/docs/cpp/guides/container">absl::node_hash_map</a> is a near drop-in replacement for <code class="language-plaintext highlighter-rouge">std::unordered_map</code> with stable pointers &amp; references. Bound to be a bit slower than <code class="language-plaintext highlighter-rouge">absl::flat_hash_map</code> due to the indirection.</p>
+
+<dl>
+  <dt>The Good</dt>
+  <dd>Being node based pointers &amp; references are stable. Search performance is still very good, there is only little slowdown compared to <code class="language-plaintext highlighter-rouge">absl::flat_hash_map</code>.</dd>
+  <dt>The Bad</dt>
+  <dd>Memory usage, copying, inserting elements is very slow, even much slower than <code class="language-plaintext highlighter-rouge">std::unordered_map</code>.</dd>
+  <dt>About</dt>
+  <dd>Website: <a href="https://abseil.io/docs/cpp/guides/container">https://abseil.io/docs/cpp/guides/container</a>, Tested version: <a href="https://github.com/abseil/abseil-cpp">736458b5 (master)</a>, License: <code class="language-plaintext highlighter-rouge">Apache License 2.0</code>
+</dd>
+</dl>
+
+<p><a name="ankerl__unordered_dense__map"></a></p>
+
+<h3 id="ankerlunordered_densemap-">ankerl::unordered_dense::map <a href="index.html#table">↑</a>
+</h3>
+
+<p>Full disclaimer: I’m the author! This map is designed to be very fast, simple, but still feature rich. It achieves that by combining ideas from <code class="language-plaintext highlighter-rouge">robin_hood::unordered_flat_map</code> and using a simple <code class="language-plaintext highlighter-rouge">std::vector</code> as storage. Iteration is therefore as fast as it gets since all data is stored linearly in memory. I consider this implementation as a successor of my old robin_hood map.</p>
+
+<dl>
+  <dt>The Good</dt>
+  <dd>The map is an excellent allrounder. Search is very fast, string search is fastest in one benchmark. Iteration speed is unbeatable because all the data lies in a contiguous block of memory. It has support for custom allocators, custom containers, and fancy pointers. It is e.g. possible to simply replace the internally used <code class="language-plaintext highlighter-rouge">std::vector</code> with other types to make use of shared memory.</dd>
+  <dt>The Bad</dt>
+  <dd>Removing an element can be relatively slow, since it requires two lookups because the map keeps a densely stored vector at all times.</dd>
+  <dt>About</dt>
+  <dd>Website: <a href="https://github.com/martinus/unordered_dense">https://github.com/martinus/unordered_dense</a>, Tested version: <a href="https://github.com/martinus/unordered_dense">v1.0.2</a>, License: <code class="language-plaintext highlighter-rouge">MIT License</code>
+</dd>
+</dl>
+
+<p><a name="boost__multi_index__hashed_unique"></a></p>
+
+<h3 id="boostmulti_indexhashed_unique-">boost::multi_index::hashed_unique <a href="index.html#table">↑</a>
+</h3>
+
+<p>Boost’s <a href="https://www.boost.org/doc/libs/1_80_0/libs/multi_index/doc/index.html">boost::multi_index</a> library is extremely powerful. You can use multiple indices at once. In this benchmark I’m just using <code class="language-plaintext highlighter-rouge">boost::multi_index::hashed_unique</code> to see how well it performs.</p>
+
+<dl>
+  <dt>The Good</dt>
+  <dd>Lookup is reasonably fast, and memory usage is ok. If you need multiple indices for the same data this is the most user friendly choice.</dd>
+  <dt>The Bad</dt>
+  <dd>Copying the map is really slow - a whopping 100 (hundred) times slower than <code class="language-plaintext highlighter-rouge">ankerl::unordered_dense::map</code>.</dd>
+  <dt>About</dt>
+  <dd>Website: <a href="https://www.boost.org/doc/libs/1_80_0/libs/multi_index/doc/index.html">https://www.boost.org/doc/libs/1_80_0/libs/multi_index/doc/index.html</a>, Tested version: <a href="https://github.com/boostorg/boost">1.80.0</a>, License: <code class="language-plaintext highlighter-rouge">Boost Software License 1.0</code>
+</dd>
+</dl>
+
+<p><a name="boost__unordered_map"></a></p>
+
+<h3 id="boostunordered_map-">boost::unordered_map <a href="index.html#table">↑</a>
+</h3>
+
+<p>In version 1.80 there has been a complete rewrite of <code class="language-plaintext highlighter-rouge">boost::unordered_map</code>. That was actually the main reason why I have decided to redo this whole benchmark. It comes with extensive documentation and <a href="https://www.boost.org/doc/libs/1_80_0/libs/unordered/doc/html/unordered.html#benchmarks">benchmarks</a>. I took the opportunity to test the map, and also try it with different allocators as my initial experiments indicated quite a big performance difference with a specialized allocator.</p>
+
+<dl>
+  <dt>The Good</dt>
+  <dd>Compared to <code class="language-plaintext highlighter-rouge">std::unordered_map</code>, lookup is almost twice as fast! This is a huge improvement, given the limitations the maps are under (stable references, and keeping the bucket API). If you need high compatibility with <code class="language-plaintext highlighter-rouge">std::unordered_map</code>, this is the best choice.</dd>
+  <dt>The Bad</dt>
+  <dd>Insert, erase, copy are relatively slow and memory usage is quite high.</dd>
+  <dt>About</dt>
+  <dd>Website: <a href="https://www.boost.org/doc/libs/1_80_0/libs/multi_index/doc/index.html">https://www.boost.org/doc/libs/1_80_0/libs/multi_index/doc/index.html</a>, Tested version: <a href="https://github.com/boostorg/boost">1.80.0</a>, License: <code class="language-plaintext highlighter-rouge">Boost Software License 1.0</code>
+</dd>
+</dl>
+
+<p><a name="boost__unordered_map_PoolAllocator"></a></p>
+
+<h3 id="boostunordered_map--poolallocator-">boost::unordered_map &amp; PoolAllocator <a href="index.html#table">↑</a>
+</h3>
+
+<p>The <code class="language-plaintext highlighter-rouge">PoolAllocator</code> is a custom allocator for node based containers. Since boost::unordered_map is node based, it has to allocate one node for each element. Thus it can potentially gain a lot from a custom allocator. I actually wrote <code class="language-plaintext highlighter-rouge">PoolAllocator</code> for Bitcoin, where an <code class="language-plaintext highlighter-rouge">std::unordered_map</code> is heavily used and using this <code class="language-plaintext highlighter-rouge">PoolAllocator</code> <a href="https://github.com/bitcoin/bitcoin/pull/25325">speeds up initial block indexing significantly</a>.</p>
+
+<dl>
+  <dt>The Good</dt>
+  <dd>Memory usage is reduced quite a lot, and copying the map is more than twice as fast.</dd>
+  <dt>The Bad</dt>
+  <dd>For some reason search performance is quite a bit slower. Theoretically using a different allocator shouldn’t make any difference, but at least in my benchmarks search performance for small maps are much slower.</dd>
+  <dt>About</dt>
+  <dd>Website: <a href="https://github.com/martinus/map_benchmark/blob/master/src/app/pool.h">https://github.com/martinus/map_benchmark/blob/master/src/app/pool.h</a>, Tested version: <code class="language-plaintext highlighter-rouge">644b2fa (master)</code>, License: <code class="language-plaintext highlighter-rouge">MIT License</code>
+</dd>
+</dl>
+
+<p><a name="boost__unordered_map_unsynchronized_pool_resource"></a></p>
+
+<h3 id="boostunordered_map--boostcontainerpmrunsynchronized_pool_resource-">boost::unordered_map &amp; boost::container::pmr::unsynchronized_pool_resource <a href="index.html#table">↑</a>
+</h3>
+
+<p>Boost comes with its own implementation of <a href="https://www.boost.org/doc/libs/1_80_0/doc/html/container/cpp_conformance.html#container.cpp_conformance.polymorphic_memory_resources">Polymorphic Memory Resources</a>, which should behave similar to <code class="language-plaintext highlighter-rouge">PoolAllocator</code>. And it does in most cases, except the <code class="language-plaintext highlighter-rouge">Copy</code> benchmark, here PoolAllocator is quite a bit faster.</p>
+
+<dl>
+  <dt>The Good</dt>
+  <dd>It’s boost’s own implementation, and it gives a big speedup for inserting elements, and is also much faster than a plain <code class="language-plaintext highlighter-rouge">boost::unordered_map</code> when many inserts &amp; erase happen. Using this custom allocator also brings down memory usage quite a lot, because it doesn’t have to pay the malloc overhead for each node.</dd>
+  <dt>The Bad</dt>
+  <dd>The time to copy the map is about the same than without a custom allocator. In comparison, with <code class="language-plaintext highlighter-rouge">PoolAllocator</code> the performnace here is almost doubled, this looks like a lost opportunity to me!</dd>
+  <dt>About</dt>
+  <dd>Website: <a href="https://www.boost.org/doc/libs/1_80_0/libs/multi_index/doc/index.html">https://www.boost.org/doc/libs/1_80_0/libs/multi_index/doc/index.html</a>, Tested version: <a href="https://github.com/boostorg/boost">1.80.0</a>, License: <code class="language-plaintext highlighter-rouge">Boost Software License 1.0</code>
+</dd>
+</dl>
+
+<p><a name="emhash7__HashMap"></a></p>
+
+<h3 id="emhash7hashmap-">emhash7::HashMap <a href="index.html#table">↑</a>
+</h3>
+
+<p>These are very high performance hashmaps and the author is constantly updating them. There are different versions of the maps with different propertices concerning performance vs. memory. This map has very fast iteration speed.</p>
+
+<dl>
+  <dt>The Good</dt>
+  <dd>One of the fastest map. It is fastest for insert &amp; erase, and find is also extremely fast.</dd>
+  <dt>The Bad</dt>
+  <dd>It’s a bit slower than the best for <code class="language-plaintext highlighter-rouge">std::string</code> keys, but overall its a very fast implementation.</dd>
+  <dt>About</dt>
+  <dd>Website: <a href="https://github.com/ktprime/emhash">https://github.com/ktprime/emhash</a>, Tested version: <code class="language-plaintext highlighter-rouge">9a3f7189 (master)</code>, License: <code class="language-plaintext highlighter-rouge">MIT License</code>
+</dd>
+</dl>
+
+<p><a name="emhash8__HashMap"></a></p>
+
+<h3 id="emhash8hashmap-">emhash8::HashMap <a href="index.html#table">↑</a>
+</h3>
+
+<p>This variant from ktprime has behaves similar to <code class="language-plaintext highlighter-rouge">emhash7::Hash</code>, but requires less memory.</p>
+
+<dl>
+  <dt>The Good</dt>
+  <dd>Very fast iteration speed, search &amp; insert is very fast. Low memory usage.</dd>
+  <dt>The Bad</dt>
+  <dd>Erase is slower than emhash7, but it’s still quite good.</dd>
+  <dt>About</dt>
+  <dd>Website: <a href="https://github.com/ktprime/emhash">https://github.com/ktprime/emhash</a>, Tested version: <code class="language-plaintext highlighter-rouge">9a3f7189 (master)</code>, License: <code class="language-plaintext highlighter-rouge">MIT License</code>
+</dd>
+</dl>
+
+<p><a name="folly__F14NodeMap"></a></p>
+
+<h3 id="follyf14nodemap-">folly::F14NodeMap <a href="index.html#table">↑</a>
+</h3>
+
+<p>A supposedly high performance hashmap implementation from Facebook / Meta. It stores values indirectly, calling malloc for each node. Also see <code class="language-plaintext highlighter-rouge">folly::F14ValueMap</code></p>
+
+<dl>
+  <dt>The Good</dt>
+  <dd>Relatively good search performance, Insert &amp; erase is not ok-ish.</dd>
+  <dt>The Bad</dt>
+  <dd>Memory usage is high. It’s a large dependency.</dd>
+  <dt>About</dt>
+  <dd>Website: <a href="https://github.com/facebook/folly">https://github.com/facebook/folly</a>, Tested version: <code class="language-plaintext highlighter-rouge">v2022.06.27.00</code>, License: <code class="language-plaintext highlighter-rouge">Apache License 2.0</code>
+</dd>
+</dl>
+
+<p><a name="folly__F14ValueMap"></a></p>
+
+<h3 id="follyf14valuemap-">folly::F14ValueMap <a href="index.html#table">↑</a>
+</h3>
+
+<p>A supposedly high performance hashmap implementation from Facebook / Meta. It stores values directly. Also see <code class="language-plaintext highlighter-rouge">folly::F14NodeMap</code></p>
+
+<dl>
+  <dt>The Good</dt>
+  <dd>Overall relatively fast search, and very low memory usage.</dd>
+  <dt>The Bad</dt>
+  <dd>It’s a big dependency</dd>
+  <dt>About</dt>
+  <dd>Website: <a href="https://github.com/facebook/folly">https://github.com/facebook/folly</a>, Tested version: <code class="language-plaintext highlighter-rouge">v2022.06.27.00</code>, License: <code class="language-plaintext highlighter-rouge">Apache License 2.0</code>
+</dd>
+</dl>
+
+<p><a name="fph__DynamicFphMap"></a></p>
+
+<h3 id="fphdynamicfphmap-">fph::DynamicFphMap <a href="index.html#table">↑</a>
+</h3>
+
+<p>A very interesting new contender: This hashmap implementation uses a perfect hash, thus it doesn’t have any collisions. This should make it extremely fast for lookups, but with a potentially high overhead for insert/removal.</p>
+
+<dl>
+  <dt>The Good</dt>
+  <dd>Find is extremely fast, regardless of the hash. In fact, <code class="language-plaintext highlighter-rouge">std::hash</code> or <code class="language-plaintext highlighter-rouge">boost::hash</code> is best here even with their bad hash quality.</dd>
+  <dt>The Bad</dt>
+  <dd>Insert and erase and copying the map is very very slow, the slowest in the benchmark. Memory usage is very high. I’d say this map is good for stable data that is never modified, and when you can afford the high memory usage.</dd>
+  <dt>About</dt>
+  <dd>Website: <a href="https://github.com/renzibei/fph-table/tree/noseed">https://github.com/renzibei/fph-table/tree/noseed</a>, Tested version: <code class="language-plaintext highlighter-rouge">1a613aba (noseed)</code>, License: <code class="language-plaintext highlighter-rouge">none specified</code>
+</dd>
+</dl>
+
+<p><a name="gtl__btree_map"></a></p>
+
+<h3 id="gtlbtree_map-">gtl::btree_map <a href="index.html#table">↑</a>
+</h3>
+
+<p>Containers from greg’s template library. This is actually not a hashmap at all, but it is an ordered container much like <code class="language-plaintext highlighter-rouge">std::map</code>. They store multiple elements per node which should make them faster because it is a more cache-friendly layout. I added this one to see if it is possible if non-hashmap implementations could compete in this benchmark.</p>
+
+<dl>
+  <dt>The Good</dt>
+  <dd>Memory usage is excellent, this container has the lowest memory usage of all. Insert &amp; erase are of medium speed.</dd>
+  <dt>The Bad</dt>
+  <dd>Lookup is very slow.</dd>
+  <dt>About</dt>
+  <dd>Website: <a href="https://github.com/greg7mdp/gtl">https://github.com/greg7mdp/gtl</a>, Tested version: <code class="language-plaintext highlighter-rouge">v1.1.2</code>, License: <code class="language-plaintext highlighter-rouge">Apache License 2.0</code>
+</dd>
+</dl>
+
+<p><a name="gtl__flat_hash_map"></a></p>
+
+<h3 id="gtlflat_hash_map-">gtl::flat_hash_map <a href="index.html#table">↑</a>
+</h3>
+
+<p>A hashmap implementation based on Google’s Abseil. It lists changes to the original implementation <a href="https://github.com/greg7mdp/gtl/blob/main/docs/hmap.md#changes-to-abseils-hashmaps">here</a>. This one is the flat variant.</p>
+
+<dl>
+  <dt>The Good</dt>
+  <dd>This has very similar performance characteristics to <code class="language-plaintext highlighter-rouge">absl::flat_hash_map</code>, with the added bonus that it also works well for bad hashes like <code class="language-plaintext highlighter-rouge">std::hash</code> and <code class="language-plaintext highlighter-rouge">boost::hash</code>. This is a single-header file.</dd>
+  <dt>The Bad</dt>
+  <dd>Same as for <code class="language-plaintext highlighter-rouge">absl::flat_hash_map</code>, copy &amp; iterating is relatively slow.</dd>
+  <dt>About</dt>
+  <dd>Website: <a href="https://github.com/greg7mdp/gtl">https://github.com/greg7mdp/gtl</a>, Tested version: <code class="language-plaintext highlighter-rouge">v1.1.2</code>, License: <code class="language-plaintext highlighter-rouge">Apache License 2.0</code>
+</dd>
+</dl>
+
+<p><a name="gtl__node_hash_map"></a></p>
+
+<h3 id="gtlnode_hash_map-">gtl::node_hash_map <a href="index.html#table">↑</a>
+</h3>
+
+<p>The node hashmap based on google abseil’s <code class="language-plaintext highlighter-rouge">absl::node_hash_map</code>. It lists changes to the original implementation <a href="https://github.com/greg7mdp/gtl/blob/main/docs/hmap.md#changes-to-abseils-hashmaps">here</a>.</p>
+
+<dl>
+  <dt>The Good</dt>
+  <dd>Performance is very similar to <code class="language-plaintext highlighter-rouge">absl::node_hash_map</code>. For some reason copying is a bit faster. It works well with <code class="language-plaintext highlighter-rouge">std::hash</code> and <code class="language-plaintext highlighter-rouge">boost::hash</code>.</dd>
+  <dt>The Bad</dt>
+  <dd>Copying &amp; iterating is still slow, insert &amp; erase are slow. Memory usage is quite high.</dd>
+  <dt>About</dt>
+  <dd>Website: <a href="https://github.com/greg7mdp/gtl">https://github.com/greg7mdp/gtl</a>, Tested version: <code class="language-plaintext highlighter-rouge">v1.1.2</code>, License: <code class="language-plaintext highlighter-rouge">Apache License 2.0</code>
+</dd>
+</dl>
+
+<p><a name="gtl__parallel_flat_hash_map"></a></p>
+
+<h3 id="gtlparallel_flat_hash_map-">gtl::parallel_flat_hash_map <a href="index.html#table">↑</a>
+</h3>
+
+<p>The parallel variants of the hashmaps have reduced peak memory usage and multithreading support. This is done by splitting up the data into multiple sub-hashmaps. See <a href="https://github.com/greg7mdp/gtl/blob/main/docs/phmap.md">Parallel hash containers provided by gtl</a> for more information.</p>
+
+<dl>
+  <dt>The Good</dt>
+  <dd>Memory usage is very good, copying is a bit faster than <code class="language-plaintext highlighter-rouge">gtl::flat_hash_map</code>. It has nice thread safety properties, see <a href="https://github.com/greg7mdp/gtl/blob/main/docs/phmap.md#thread-safety">here</a>.</dd>
+  <dt>The Bad</dt>
+  <dd>Search is a bit slower than the non-parallel variant. It’s still fast though.</dd>
+  <dt>About</dt>
+  <dd>Website: <a href="https://github.com/greg7mdp/gtl">https://github.com/greg7mdp/gtl</a>, Tested version: <code class="language-plaintext highlighter-rouge">v1.1.2</code>, License: <code class="language-plaintext highlighter-rouge">Apache License 2.0</code>
+</dd>
+</dl>
+
+<p><a name="gtl__parallel_node_hash_map"></a></p>
+
+<h3 id="gtlparallel_node_hash_map-">gtl::parallel_node_hash_map <a href="index.html#table">↑</a>
+</h3>
+
+<p>The parallel variants of the hashmaps have reduced peak memory usage and multithreading support. This is done by splitting up the data into multiple sub-hashmaps. See <a href="https://github.com/greg7mdp/gtl/blob/main/docs/phmap.md">Parallel hash containers provided by gtl</a> for more information.</p>
+
+<dl>
+  <dt>The Good</dt>
+  <dd>Copying is a bit faster than <code class="language-plaintext highlighter-rouge">gtl::flat_hash_map</code>. It has nice thread safety properties, see <a href="https://github.com/greg7mdp/gtl/blob/main/docs/phmap.md#thread-safety">here</a>.</dd>
+  <dt>The Bad</dt>
+  <dd>Memory usage is not really much better due to the node overhead. This is the slowerst variant in terms of find speed.</dd>
+  <dt>About</dt>
+  <dd>Website: <a href="https://github.com/greg7mdp/gtl">https://github.com/greg7mdp/gtl</a>, Tested version: <code class="language-plaintext highlighter-rouge">v1.1.2</code>, License: <code class="language-plaintext highlighter-rouge">Apache License 2.0</code>
+</dd>
+</dl>
+
+<p><a name="jg__dense_hash_map"></a></p>
+
+<h3 id="jgdense_hash_map-">jg::dense_hash_map <a href="index.html#table">↑</a>
+</h3>
+
+<p>A simple replacement for <code class="language-plaintext highlighter-rouge">std::unordered_map</code> with better performance but loose stable addressing as a trade-off. The author has <a href="https://jguegant.github.io/blogs/tech/dense-hash-map.html#dense-hash-map">nice blog posts about the hashmap’s properties</a>.</p>
+
+<dl>
+  <dt>The Good</dt>
+  <dd>Most operations are really fast, and since data is densly stored iteration is very fast too. For small number of elements (200-2000) this is actually the fastest map!</dd>
+  <dt>The Bad</dt>
+  <dd>For larger maps the search is still fast but not the best. String search is ok but not among the best performer.</dd>
+  <dt>About</dt>
+  <dd>Website: <a href="https://github.com/Jiwan/dense_hash_map">https://github.com/Jiwan/dense_hash_map</a>, Tested version: <code class="language-plaintext highlighter-rouge">74277fc4 (master)</code>, License: <code class="language-plaintext highlighter-rouge">MIT License</code>
+</dd>
+</dl>
+
+<p><a name="robin_hood__unordered_flat_map"></a></p>
+
+<h3 id="robin_hoodunordered_flat_map-">robin_hood::unordered_flat_map <a href="index.html#table">↑</a>
+</h3>
+
+<p>Full disclaimer: I’m the author! This is a flat map that is very fast, and I have spent considerable time optimizing it. At that point though it has become hard for me to further support it, and will only provide bug fixes. I consider <code class="language-plaintext highlighter-rouge">ankerl::unordered_dense::map</code> its successor!</p>
+
+<dl>
+  <dt>The Good</dt>
+  <dd>Search for numbers is quite fast, inserting &amp; erasing is very good.</dd>
+  <dt>The Bad</dt>
+  <dd>Iteration is relatively slow, search for numbers could be better. Due to the design when bad hash quality is used it can overflow though (throws <code class="language-plaintext highlighter-rouge">std::overflow_error</code>). In my own usage, which is quite heavy, this never happened to me. There are reports from users though where it happened. I’ve stopped developing it in favor of <code class="language-plaintext highlighter-rouge">ankerl::unordered_dense::map</code>.</dd>
+  <dt>About</dt>
+  <dd>Website: <a href="https://github.com/martinus/robin-hood-hashing">https://github.com/martinus/robin-hood-hashing</a>, Tested version: <code class="language-plaintext highlighter-rouge">3.11.5</code>, License: <code class="language-plaintext highlighter-rouge">MIT License</code>
+</dd>
+</dl>
+
+<p><a name="robin_hood__unordered_node_map"></a></p>
+
+<h3 id="robin_hoodunordered_node_map-">robin_hood::unordered_node_map <a href="index.html#table">↑</a>
+</h3>
+
+<p>Similar to <code class="language-plaintext highlighter-rouge">robin_hood::unordered_flat_map</code>, but with stable references &amp; pointers. To make this fast it uses a specialized allocator implementation. At that point though it has become hard for me to further support it, and will only provide bug fixes. I consider <code class="language-plaintext highlighter-rouge">ankerl::unordered_dense::map</code> its successor!</p>
+
+<dl>
+  <dt>The Good</dt>
+  <dd>It’s really fast and memory usage is quite low. For a node based container iteration is quite good.</dd>
+  <dt>The Bad</dt>
+  <dd>Due to the design when bad hash quality is used it can overflow though (throws <code class="language-plaintext highlighter-rouge">std::overflow_error</code>). In my own usage, which is quite heavy, this never happened to me. There are reports from users though where it happened. I’ve stopped developing it in favor of <code class="language-plaintext highlighter-rouge">ankerl::unordered_dense::map</code>.</dd>
+  <dt>About</dt>
+  <dd>Website: <a href="https://github.com/martinus/robin-hood-hashing">https://github.com/martinus/robin-hood-hashing</a>, Tested version: <code class="language-plaintext highlighter-rouge">3.11.5</code>, License: <code class="language-plaintext highlighter-rouge">MIT License</code>
+</dd>
+</dl>
+
+<p><a name="ska__bytell_hash_map"></a></p>
+
+<h3 id="skabytell_hash_map-">ska::bytell_hash_map <a href="index.html#table">↑</a>
+</h3>
+
+<p>This map was developed by Malte Skarupke in response to Google’s <code class="language-plaintext highlighter-rouge">absl::flat_hash_map</code>. It is described with benchmarks in the blog post <a href="https://probablydance.com/2018/05/28/a-new-fast-hash-table-in-response-to-googles-new-fast-hash-table/">A new fast hash table in response to Google’s new fast hash table</a>.</p>
+
+<dl>
+  <dt>The Good</dt>
+  <dd>Insert &amp; erase is very fast, find speed is ok. Memory usage is quite good, the same as <code class="language-plaintext highlighter-rouge">robin_hood::unordered_flat_map</code>. I suspect it too uses 1 byte overhead per entry and a default fill rate of 80%.</dd>
+  <dt>The Bad</dt>
+  <dd>Iteration is slow. The map has not received any updates in the last 4 years.</dd>
+  <dt>About</dt>
+  <dd>Website: <a href="https://github.com/skarupke/flat_hash_map">https://github.com/skarupke/flat_hash_map</a>, Tested version: <code class="language-plaintext highlighter-rouge">2c468743 (master)</code>, License: <code class="language-plaintext highlighter-rouge">Boost Software License 1.0</code>
+</dd>
+</dl>
+
+<p><a name="ska__flat_hash_map"></a></p>
+
+<h3 id="skaflat_hash_map-">ska::flat_hash_map <a href="index.html#table">↑</a>
+</h3>
+
+<p>This map came before <code class="language-plaintext highlighter-rouge">ska::bytell_hash_map</code> and is described in Malte Skarupke’s blog post <a href="https://probablydance.com/2017/02/26/i-wrote-the-fastest-hashtable/">I Wrote The Fastest Hashtable</a></p>
+
+<dl>
+  <dt>The Good</dt>
+  <dd>Search performanc is really good, especially for small number of entries.</dd>
+  <dt>The Bad</dt>
+  <dd>Contrary to its claims it is not the fastest hashtable in any of my benchmarks. Iteration speed is very slow, 26 times slower than the top hash maps. Memory usage is very high.</dd>
+  <dt>About</dt>
+  <dd>Website: <a href="https://github.com/skarupke/flat_hash_map">https://github.com/skarupke/flat_hash_map</a>, Tested version: <code class="language-plaintext highlighter-rouge">2c468743 (master)</code>, License: <code class="language-plaintext highlighter-rouge">Boost Software License 1.0</code>
+</dd>
+</dl>
+
+<p><a name="spp__sparse_hash_map"></a></p>
+
+<h3 id="sppsparse_hash_map-">spp::sparse_hash_map <a href="index.html#table">↑</a>
+</h3>
+
+<p>The map is derived from Google’s <a href="https://github.com/sparsehash/sparsehash">sparsehash</a> implementation, but with a modernized C++11 interface.</p>
+
+<dl>
+  <dt>The Good</dt>
+  <dd>Memory usage is very low. Iteration speed is good. Find performance is quite good for such a compact hashmap.</dd>
+  <dt>The Bad</dt>
+  <dd>Copy is relatively slow, I’m pretty sure this could be optimized.</dd>
+  <dt>About</dt>
+  <dd>Website: <a href="https://github.com/greg7mdp/sparsepp">https://github.com/greg7mdp/sparsepp</a>, Tested version: <code class="language-plaintext highlighter-rouge">1.22</code>, License: <code class="language-plaintext highlighter-rouge">modified MIT</code>
+</dd>
+</dl>
+
+<p><a name="std__unordered_map"></a></p>
+
+<h3 id="stdunordered_map-">std::unordered_map <a href="index.html#table">↑</a>
+</h3>
+
+<p>This is the golden standard to which every implementation likes to compare against.</p>
+
+<dl>
+  <dt>The Good</dt>
+  <dd>It’s the standard. It is rock solid, and for most use cases fast enough.</dd>
+  <dt>The Bad</dt>
+  <dd>Slow across the board. There is no benchmark where the map is fast compared to most of the competitors.</dd>
+  <dt>About</dt>
+  <dd>Website: <a href="https://gcc.gnu.org/onlinedocs/libstdc++/">https://gcc.gnu.org/onlinedocs/libstdc++/</a>, Tested version: <code class="language-plaintext highlighter-rouge">v3</code>, License: <a href="https://gcc.gnu.org/onlinedocs/libstdc++/manual/license.html">modified GPL</a>
+</dd>
+</dl>
+
+<p><a name="std__unordered_map__PoolAllocator"></a></p>
+
+<h3 id="stdunordered_map--poolallocator-">std::unordered_map &amp; PoolAllocator <a href="index.html#table">↑</a>
+</h3>
+
+<p><code class="language-plaintext highlighter-rouge">PoolAllocator</code> provides a generic allocator that works especially well for node based maps like <code class="language-plaintext highlighter-rouge">std::unordered_map</code>.</p>
+
+<dl>
+  <dt>The Good</dt>
+  <dd>Copying the map becomes about twice as fast with the allocator. Memory usage drops quite a bit. There is some change in find performance, sometimes it’s faster with the pool, sometimes slower.</dd>
+  <dt>The Bad</dt>
+  <dd>Initialization is a bit more complex, requiring one additional line of code to initialize the <code class="language-plaintext highlighter-rouge">PoolAllocator</code>.</dd>
+  <dt>About</dt>
+  <dd>Website: <a href="https://github.com/martinus/map_benchmark/blob/master/src/app/pool.h">https://github.com/martinus/map_benchmark/blob/master/src/app/pool.h</a>, Tested version: <code class="language-plaintext highlighter-rouge">644b2fa (master)</code>, License: <code class="language-plaintext highlighter-rouge">MIT License</code>
+</dd>
+</dl>
+
+<p><a name="std__unordered_map__unsynchronized_pool_resource"></a></p>
+
+<h3 id="stdunordered_map--stdpmrunsynchronized_pool_resource-">std::unordered_map &amp; std::pmr::unsynchronized_pool_resource <a href="index.html#table">↑</a>
+</h3>
+
+<p>Theoretically <code class="language-plaintext highlighter-rouge">std::pmr::unsynchronized_pool_resource</code> should behave very similar to <code class="language-plaintext highlighter-rouge">PoolAllocator</code>, but it comes from the standard library and requires support for polymorphic memory resources. This is in the C++17 standard, but not everyone implements this.</p>
+
+<dl>
+  <dt>The Good</dt>
+  <dd>Same as for <code class="language-plaintext highlighter-rouge">PoolAllocator</code> find is mostly unaffected, and memory usage is lower.</dd>
+  <dt>The Bad</dt>
+  <dd>Iteration speed is slowed down significantly. Theoretically this shouldn’t make any difference, but it does. Copying the map also got slower.</dd>
+  <dt>About</dt>
+  <dd>Website: <a href="https://gcc.gnu.org/onlinedocs/libstdc++/">https://gcc.gnu.org/onlinedocs/libstdc++/</a>, Tested version: <code class="language-plaintext highlighter-rouge">v3</code>, License: <a href="https://gcc.gnu.org/onlinedocs/libstdc++/manual/license.html">modified GPL</a>
+</dd>
+</dl>
+
+<p><a name="tsl__hopscotch_map"></a></p>
+
+<h3 id="tslhopscotch_map-">tsl::hopscotch_map <a href="index.html#table">↑</a>
+</h3>
+
+<p>Hashmap based on hopscotch method. This method should be cache friendly and is relatively similar to <code class="language-plaintext highlighter-rouge">google::dense_hash_map</code>.</p>
+
+<dl>
+  <dt>The Good</dt>
+  <dd>Insert &amp; erase is very fast. Search performance is ok but not stellar. Memory usage is ok-ish.</dd>
+  <dt>The Bad</dt>
+  <dd>General performance is not too bad, but also not good.</dd>
+  <dt>About</dt>
+  <dd>Website: <a href="https://github.com/Tessil/hopscotch-map">https://github.com/Tessil/hopscotch-map</a>, Tested version: <code class="language-plaintext highlighter-rouge">v2.3.0</code>, License: <code class="language-plaintext highlighter-rouge">MIT license </code>
+</dd>
+</dl>
+
+<p><a name="tsl__robin_map"></a></p>
+
+<h3 id="tslrobin_map-">tsl::robin_map <a href="index.html#table">↑</a>
+</h3>
+
+<p>A map implemented that makes use of robin hood’s backward shift deletion.</p>
+
+<dl>
+  <dt>The Good</dt>
+  <dd>When a proper hash is used (anything except <code class="language-plaintext highlighter-rouge">std::hash</code> or <code class="language-plaintext highlighter-rouge">boost::hash</code>), insert &amp; erase performance is top.</dd>
+  <dt>The Bad</dt>
+  <dd>It is very sensitive with the hash quality, and times out in my random insert &amp; erase benchmarks with <code class="language-plaintext highlighter-rouge">std::hash</code> and <code class="language-plaintext highlighter-rouge">boost::hash</code>. Memory usage is very high. <code class="language-plaintext highlighter-rouge">std::string</code> search is ok but not the fastest. Iteration speed is very slow.</dd>
+  <dt>About</dt>
+  <dd>Website: <a href="https://github.com/Tessil/robin-map">https://github.com/Tessil/robin-map</a>, Tested version: <code class="language-plaintext highlighter-rouge">1.0.1</code>, License: <code class="language-plaintext highlighter-rouge">MIT License</code>
+</dd>
+</dl>
+
+<p><a name="tsl__sparse_map"></a></p>
+
+<h3 id="tslsparse_map-">tsl::sparse_map <a href="index.html#table">↑</a>
+</h3>
+
+<p>A map based on Google’s <code class="language-plaintext highlighter-rouge">google::sparse_hash_map</code>, which also makes it similar to <code class="language-plaintext highlighter-rouge">spp::sparse_hash_map</code>.</p>
+
+<dl>
+  <dt>The Good</dt>
+  <dd>Excellent low memory usage, only <code class="language-plaintext highlighter-rouge">gtl::btree_map</code> is better. For such a low memory usage search performance is very good. Copy is fast too.</dd>
+  <dt>The Bad</dt>
+  <dd>As with <code class="language-plaintext highlighter-rouge">tsl::robin_map</code> this implementation highly depends on a good quality hash. My benchmarks time out with <code class="language-plaintext highlighter-rouge">std::hash</code> and <code class="language-plaintext highlighter-rouge">boost::hash</code>.</dd>
+  <dt>About</dt>
+  <dd>Website: <a href="https://github.com/Tessil/sparse-map">https://github.com/Tessil/sparse-map</a>, Tested version: <code class="language-plaintext highlighter-rouge">v0.6.2</code>, License: <code class="language-plaintext highlighter-rouge">MIT license</code>
+</dd>
+</dl>
+
+<h2 id="hashes">Hashes</h2>
+
+<p>I have benchmarked all hashmaps with a combination of different hashes. All the hashes have a generic implementation, but they can be basically differenciated into two different modes:</p>
+
+<ul>
+  <li>Calculating a hash of an integral type (<code class="language-plaintext highlighter-rouge">int</code>, <code class="language-plaintext highlighter-rouge">size_t</code>, <code class="language-plaintext highlighter-rouge">uint64_t</code>, …)</li>
+  <li>Calculating a hash of a string (<code class="language-plaintext highlighter-rouge">std::string</code>, <code class="language-plaintext highlighter-rouge">std::string_view</code>, …)</li>
+</ul>
+
+<p>Many hashmap implementation depend on a reasonably good hash, where <em>reasonably good</em> usually means that it has sufficiently good <a href="https://en.wikipedia.org/wiki/Avalanche_effect">avalanching</a> so that changes in the input have an effect on the storage location in the hashmap.</p>
+
+<p>Unfortunately <code class="language-plaintext highlighter-rouge">std::hash</code> and <code class="language-plaintext highlighter-rouge">boost::hash</code> use the identity function for integral types. This is obviously very fast to calculate (simply return the input value), but has no avalanching properties whatsoever. Depending on the input value this can be disastrous for the hashmap performance. It can make the difference between 1 second and 10 minutes runtime. Most of these problems can be found when operating with numbers where only the upper bits change while the lower bits stay constant.</p>
+
+<p><a name="std__hash"></a></p>
+
+<h3 id="stdhash-">std::hash <a href="index.html#table">↑</a>
+</h3>
+
+<dl>
+  <dt>Integral Types</dt>
+  <dd>Most implementations use the identity hash, which makes them incredible fast and incredible bad. Identity hash works for some hashmap implementations, either by design or because they contain mitigation measures. E.g. <code class="language-plaintext highlighter-rouge">ankerl::unordered_dense::map</code> specifically implements additional mixer when it believes hashes are of bad quality. Many maps don’t have these mitigation steps. Thus many of my benchmarks time out for the maps <code class="language-plaintext highlighter-rouge">absl::flat_hash_map</code>, <code class="language-plaintext highlighter-rouge">absl::node_hash_map</code>, <code class="language-plaintext highlighter-rouge">emhash7::HashMap</code>, <code class="language-plaintext highlighter-rouge">emhash8::HashMap</code>, <code class="language-plaintext highlighter-rouge">jg::dense_hash_map</code>, <code class="language-plaintext highlighter-rouge">spp::sparse_hash_map</code>, <code class="language-plaintext highlighter-rouge">tsl::hopscotch_map</code>, <code class="language-plaintext highlighter-rouge">tsl::robin_map</code>, <code class="language-plaintext highlighter-rouge">tsl::sparse_map</code>. Here are some hashes and the corresponding hash values. You can see that any hashmap that depends on the lower or upper bits to change on different input might not get what they want:
+    <ul>
+      <li>
+<code class="language-plaintext highlighter-rouge">0x0000000000000000</code> → <code class="language-plaintext highlighter-rouge">0x0000000000000000</code> <code class="language-plaintext highlighter-rouge">0000000000000000000000000000000000000000000000000000000000000000</code>
+</li>
+      <li>
+<code class="language-plaintext highlighter-rouge">0x0000000000000001</code> → <code class="language-plaintext highlighter-rouge">0x0000000000000001</code> <code class="language-plaintext highlighter-rouge">0000000000000000000000000000000000000000000000000000000000000001</code>
+</li>
+      <li>
+<code class="language-plaintext highlighter-rouge">0x0000000000000002</code> → <code class="language-plaintext highlighter-rouge">0x0000000000000002</code> <code class="language-plaintext highlighter-rouge">0000000000000000000000000000000000000000000000000000000000000010</code>
+</li>
+      <li>
+<code class="language-plaintext highlighter-rouge">0x0001000000000000</code> → <code class="language-plaintext highlighter-rouge">0x0001000000000000</code> <code class="language-plaintext highlighter-rouge">0000000000000001000000000000000000000000000000000000000000000000</code>
+</li>
+      <li>
+<code class="language-plaintext highlighter-rouge">0x0002000000000000</code> → <code class="language-plaintext highlighter-rouge">0x0002000000000000</code> <code class="language-plaintext highlighter-rouge">0000000000000010000000000000000000000000000000000000000000000000</code>
+</li>
+      <li>
+<code class="language-plaintext highlighter-rouge">0x0004000000000000</code> → <code class="language-plaintext highlighter-rouge">0x0004000000000000</code> <code class="language-plaintext highlighter-rouge">0000000000000100000000000000000000000000000000000000000000000000</code>
+</li>
+      <li>
+<code class="language-plaintext highlighter-rouge">0x0001000000000001</code> → <code class="language-plaintext highlighter-rouge">0x0001000000000001</code> <code class="language-plaintext highlighter-rouge">0000000000000001000000000000000000000000000000000000000000000001</code>
+</li>
+      <li>
+<code class="language-plaintext highlighter-rouge">0x0002000000000001</code> → <code class="language-plaintext highlighter-rouge">0x0002000000000001</code> <code class="language-plaintext highlighter-rouge">0000000000000010000000000000000000000000000000000000000000000001</code>
+</li>
+      <li>
+<code class="language-plaintext highlighter-rouge">0x0004000000000001</code> → <code class="language-plaintext highlighter-rouge">0x0004000000000001</code> <code class="language-plaintext highlighter-rouge">0000000000000100000000000000000000000000000000000000000000000001</code>
+</li>
+    </ul>
+  </dd>
+</dl>
+
+<p>Note that <a href="https://github.com/microsoft/STL/blob/main/stl/inc/type_traits#L2143">Microsoft’s implementation of the STL uses the fnv1a algorithm</a>. This is a very simple hash with ok-ish quality and very bad performance. <a href="https://godbolt.org/z/Pz9TEfcYe">See godbolt for a comparison</a>.</p>
+
+<dl>
+  <dt>String Types</dt>
+  <dd>String hashing performance is ok for libstdc++.</dd>
+</dl>
+
+<p><a name="boost__hash"></a></p>
+
+<h3 id="boosthash-">boost::hash <a href="index.html#table">↑</a>
+</h3>
+
+<dl>
+  <dt>Integral Types</dt>
+  <dd>Uses identity hash, therefore it should behave here exactly the same as <code class="language-plaintext highlighter-rouge">std::hash</code>. The same maps timeout: <code class="language-plaintext highlighter-rouge">absl::flat_hash_map</code>, <code class="language-plaintext highlighter-rouge">absl::node_hash_map</code>, <code class="language-plaintext highlighter-rouge">emhash7::HashMap</code>, <code class="language-plaintext highlighter-rouge">emhash8::HashMap</code>, <code class="language-plaintext highlighter-rouge">jg::dense_hash_map</code>, <code class="language-plaintext highlighter-rouge">spp::sparse_hash_map</code>, <code class="language-plaintext highlighter-rouge">tsl::hopscotch_map</code>, <code class="language-plaintext highlighter-rouge">tsl::robin_map</code>, <code class="language-plaintext highlighter-rouge">tsl::sparse_map</code>. As with <code class="language-plaintext highlighter-rouge">std::hash</code>, the hash values have no avalanching.
+    <ul>
+      <li>
+<code class="language-plaintext highlighter-rouge">0x0000000000000000</code> → <code class="language-plaintext highlighter-rouge">0x0000000000000000</code> <code class="language-plaintext highlighter-rouge">0000000000000000000000000000000000000000000000000000000000000000</code>
+</li>
+      <li>
+<code class="language-plaintext highlighter-rouge">0x0000000000000001</code> → <code class="language-plaintext highlighter-rouge">0x0000000000000001</code> <code class="language-plaintext highlighter-rouge">0000000000000000000000000000000000000000000000000000000000000001</code>
+</li>
+      <li>
+<code class="language-plaintext highlighter-rouge">0x0000000000000002</code> → <code class="language-plaintext highlighter-rouge">0x0000000000000002</code> <code class="language-plaintext highlighter-rouge">0000000000000000000000000000000000000000000000000000000000000010</code>
+</li>
+      <li>
+<code class="language-plaintext highlighter-rouge">0x0001000000000000</code> → <code class="language-plaintext highlighter-rouge">0x0001000000000000</code> <code class="language-plaintext highlighter-rouge">0000000000000001000000000000000000000000000000000000000000000000</code>
+</li>
+      <li>
+<code class="language-plaintext highlighter-rouge">0x0002000000000000</code> → <code class="language-plaintext highlighter-rouge">0x0002000000000000</code> <code class="language-plaintext highlighter-rouge">0000000000000010000000000000000000000000000000000000000000000000</code>
+</li>
+      <li>
+<code class="language-plaintext highlighter-rouge">0x0004000000000000</code> → <code class="language-plaintext highlighter-rouge">0x0004000000000000</code> <code class="language-plaintext highlighter-rouge">0000000000000100000000000000000000000000000000000000000000000000</code>
+</li>
+      <li>
+<code class="language-plaintext highlighter-rouge">0x0001000000000001</code> → <code class="language-plaintext highlighter-rouge">0x0001000000000001</code> <code class="language-plaintext highlighter-rouge">0000000000000001000000000000000000000000000000000000000000000001</code>
+</li>
+      <li>
+<code class="language-plaintext highlighter-rouge">0x0002000000000001</code> → <code class="language-plaintext highlighter-rouge">0x0002000000000001</code> <code class="language-plaintext highlighter-rouge">0000000000000010000000000000000000000000000000000000000000000001</code>
+</li>
+      <li>
+<code class="language-plaintext highlighter-rouge">0x0004000000000001</code> → <code class="language-plaintext highlighter-rouge">0x0004000000000001</code> <code class="language-plaintext highlighter-rouge">0000000000000100000000000000000000000000000000000000000000000001</code>
+</li>
+    </ul>
+  </dd>
+  <dt>String Types</dt>
+  <dd>String hashing performance is slow! It’s much slower than <code class="language-plaintext highlighter-rouge">std::hash</code> and it seems to use by far the slowest string hashing algorithm of all hashes that I tested.</dd>
+</dl>
+
+<p><a name="absl__Hash"></a></p>
+
+<h3 id="abslhash-">absl::Hash <a href="index.html#table">↑</a>
+</h3>
+
+<dl>
+  <dt>Integral Types</dt>
+  <dd>This mixes the numbers well and has good avalanching properties. It is also fast, works well with all hashmaps. Here are some inputs and the corresponding hash values (in hex and in bits)
+    <ul>
+      <li>
+<code class="language-plaintext highlighter-rouge">0x0000000000000000</code> → <code class="language-plaintext highlighter-rouge">0x9a21db8e77112ea2</code> <code class="language-plaintext highlighter-rouge">1001101000100001110110111000111001110111000100010010111010100010</code>
+</li>
+      <li>
+<code class="language-plaintext highlighter-rouge">0x0000000000000001</code> → <code class="language-plaintext highlighter-rouge">0x3801ed914ce8fc3a</code> <code class="language-plaintext highlighter-rouge">0011100000000001111011011001000101001100111010001111110000111010</code>
+</li>
+      <li>
+<code class="language-plaintext highlighter-rouge">0x0000000000000002</code> → <code class="language-plaintext highlighter-rouge">0xd5e1f799a1a0d391</code> <code class="language-plaintext highlighter-rouge">1101010111100001111101111001100110100001101000001101001110010001</code>
+</li>
+      <li>
+<code class="language-plaintext highlighter-rouge">0x0001000000000000</code> → <code class="language-plaintext highlighter-rouge">0xc78a3c6e611a3b6a</code> <code class="language-plaintext highlighter-rouge">1100011110001010001111000110111001100001000110100011101101101010</code>
+</li>
+      <li>
+<code class="language-plaintext highlighter-rouge">0x0002000000000000</code> → <code class="language-plaintext highlighter-rouge">0xf4f29e4e1be30032</code> <code class="language-plaintext highlighter-rouge">1111010011110010100111100100111000011011111000110000000000110010</code>
+</li>
+      <li>
+<code class="language-plaintext highlighter-rouge">0x0004000000000000</code> → <code class="language-plaintext highlighter-rouge">0x4fc7420e2ffd79c3</code> <code class="language-plaintext highlighter-rouge">0100111111000111010000100000111000101111111111010111100111000011</code>
+</li>
+      <li>
+<code class="language-plaintext highlighter-rouge">0x0001000000000001</code> → <code class="language-plaintext highlighter-rouge">0x656a0a715ae3e9f2</code> <code class="language-plaintext highlighter-rouge">0110010101101010000010100111000101011010111000111110100111110010</code>
+</li>
+      <li>
+<code class="language-plaintext highlighter-rouge">0x0002000000000001</code> → <code class="language-plaintext highlighter-rouge">0x92d2a851201ad2aa</code> <code class="language-plaintext highlighter-rouge">1001001011010010101010000101000100100000000110101101001010101010</code>
+</li>
+      <li>
+<code class="language-plaintext highlighter-rouge">0x0004000000000001</code> → <code class="language-plaintext highlighter-rouge">0xeda774111404ab5a</code> <code class="language-plaintext highlighter-rouge">1110110110100111011101000001000100010100000001001010101101011010</code>
+</li>
+    </ul>
+  </dd>
+  <dt>String Types</dt>
+  <dd>String hashing performance is very fast, I believe it is based on <code class="language-plaintext highlighter-rouge">wyhash</code>.</dd>
+</dl>
+
+<p><a name="ankerl__unordered_dense__hash"></a></p>
+
+<h3 id="ankerlunordered_densehash-">ankerl::unordered_dense::hash <a href="index.html#table">↑</a>
+</h3>
+
+<p>A very fast hash across the board, with good avalanching properties. Note that this always returns an <code class="language-plaintext highlighter-rouge">uint64_t</code> and not a <code class="language-plaintext highlighter-rouge">size_t</code> like <code class="language-plaintext highlighter-rouge">std::hash</code>, so it produces the same 64bit numbers also on 32bit systems (and might be relatively slow on these). It also adds a property <code class="language-plaintext highlighter-rouge">using is_avalanching = void;</code> to the hash which makes it possible for hashmap implementations to differentiate their behavior based on the quality of the hash they are getting. This is used in <code class="language-plaintext highlighter-rouge">ankerl::unordered_dense::map</code>.</p>
+
+<dl>
+  <dt>Integral Types</dt>
+  <dd>This hash uses a very simple but effective mixer. It performs a 128bit multiplication of the input with a constant and then XOR’s the input. It produces good avalanching (at least good enough for hashmaps to perform well), and can be calculated extremely fast. It usually compiles down to 4 assembly instructions (<code class="language-plaintext highlighter-rouge">movabs</code>, <code class="language-plaintext highlighter-rouge">mov</code>, <code class="language-plaintext highlighter-rouge">mul</code>, <code class="language-plaintext highlighter-rouge">xor</code>. See <a href="https://godbolt.org/z/b36Kr8oYj">godbolt example</a>). Note that for the input 0 the output is also 0. I believe it has worse mixing quality than the hash used in <code class="language-plaintext highlighter-rouge">absl::Hash</code>, but it is faster and generally good enough.
+    <ul>
+      <li>
+<code class="language-plaintext highlighter-rouge">0x0000000000000000</code> → <code class="language-plaintext highlighter-rouge">0x0000000000000000</code> <code class="language-plaintext highlighter-rouge">0000000000000000000000000000000000000000000000000000000000000000</code>
+</li>
+      <li>
+<code class="language-plaintext highlighter-rouge">0x0000000000000001</code> → <code class="language-plaintext highlighter-rouge">0x9e3779b97f4a7c15</code> <code class="language-plaintext highlighter-rouge">1001111000110111011110011011100101111111010010100111110000010101</code>
+</li>
+      <li>
+<code class="language-plaintext highlighter-rouge">0x0000000000000002</code> → <code class="language-plaintext highlighter-rouge">0x3c6ef372fe94f82b</code> <code class="language-plaintext highlighter-rouge">0011110001101110111100110111001011111110100101001111100000101011</code>
+</li>
+      <li>
+<code class="language-plaintext highlighter-rouge">0x0001000000000000</code> → <code class="language-plaintext highlighter-rouge">0x7c159e3779b97f4a</code> <code class="language-plaintext highlighter-rouge">0111110000010101100111100011011101111001101110010111111101001010</code>
+</li>
+      <li>
+<code class="language-plaintext highlighter-rouge">0x0002000000000000</code> → <code class="language-plaintext highlighter-rouge">0xf82b3c6ef372fe94</code> <code class="language-plaintext highlighter-rouge">1111100000101011001111000110111011110011011100101111111010010100</code>
+</li>
+      <li>
+<code class="language-plaintext highlighter-rouge">0x0004000000000000</code> → <code class="language-plaintext highlighter-rouge">0xf05678dde6e5fd29</code> <code class="language-plaintext highlighter-rouge">1111000001010110011110001101110111100110111001011111110100101001</code>
+</li>
+      <li>
+<code class="language-plaintext highlighter-rouge">0x0001000000000001</code> → <code class="language-plaintext highlighter-rouge">0x1a4ce78e06f3035e</code> <code class="language-plaintext highlighter-rouge">0001101001001100111001111000111000000110111100110000001101011110</code>
+</li>
+      <li>
+<code class="language-plaintext highlighter-rouge">0x0002000000000001</code> → <code class="language-plaintext highlighter-rouge">0x966045d78c388280</code> <code class="language-plaintext highlighter-rouge">1001011001100000010001011101011110001100001110001000001010000000</code>
+</li>
+      <li>
+<code class="language-plaintext highlighter-rouge">0x0004000000000001</code> → <code class="language-plaintext highlighter-rouge">0x8e89016499af813f</code> <code class="language-plaintext highlighter-rouge">1000111010001001000000010110010010011001101011111000000100111111</code>
+</li>
+    </ul>
+  </dd>
+  <dt>String Types</dt>
+  <dd>This uses <a href="https://github.com/wangyi-fudan/wyhash">wyhash</a>. This is an extremely fast hash for both small and large strings with very high hashing quality. The code size is also relatively small which makes inlining easier for the compiler.</dd>
+</dl>
+
+<p><a name="robin_hood__hash"></a></p>
+
+<h3 id="robin_hoodhash-">robin_hood::hash <a href="index.html#table">↑</a>
+</h3>
+
+<dl>
+  <dt>Integral Types</dt>
+  <dd>The hash of <code class="language-plaintext highlighter-rouge">robin_hood::unordered_map</code> has gone through quite a bit of evolution. Currently it is basically murmurhash3. It is relatively fast and should have relatively good avalanching properties.
+    <ul>
+      <li>
+<code class="language-plaintext highlighter-rouge">0x0000000000000000</code> → <code class="language-plaintext highlighter-rouge">0x0000000000000000</code> <code class="language-plaintext highlighter-rouge">0000000000000000000000000000000000000000000000000000000000000000</code>
+</li>
+      <li>
+<code class="language-plaintext highlighter-rouge">0x0000000000000001</code> → <code class="language-plaintext highlighter-rouge">0xff51afd792fd5b26</code> <code class="language-plaintext highlighter-rouge">1111111101010001101011111101011110010010111111010101101100100110</code>
+</li>
+      <li>
+<code class="language-plaintext highlighter-rouge">0x0000000000000002</code> → <code class="language-plaintext highlighter-rouge">0xfea35fafa5fab64d</code> <code class="language-plaintext highlighter-rouge">1111111010100011010111111010111110100101111110101011011001001101</code>
+</li>
+      <li>
+<code class="language-plaintext highlighter-rouge">0x0001000000000000</code> → <code class="language-plaintext highlighter-rouge">0x64b8f6aaf43afb55</code> <code class="language-plaintext highlighter-rouge">0110010010111000111101101010101011110100001110101111101101010101</code>
+</li>
+      <li>
+<code class="language-plaintext highlighter-rouge">0x0002000000000000</code> → <code class="language-plaintext highlighter-rouge">0xc971ed55e875f6aa</code> <code class="language-plaintext highlighter-rouge">1100100101110001111011010101010111101000011101011111011010101010</code>
+</li>
+      <li>
+<code class="language-plaintext highlighter-rouge">0x0004000000000000</code> → <code class="language-plaintext highlighter-rouge">0x92e3daab50ebed55</code> <code class="language-plaintext highlighter-rouge">1001001011100011110110101010101101010000111010111110110101010101</code>
+</li>
+      <li>
+<code class="language-plaintext highlighter-rouge">0x0001000000000001</code> → <code class="language-plaintext highlighter-rouge">0x640aa68281b95f8c</code> <code class="language-plaintext highlighter-rouge">0110010000001010101001101000001010000001101110010101111110001100</code>
+</li>
+      <li>
+<code class="language-plaintext highlighter-rouge">0x0002000000000001</code> → <code class="language-plaintext highlighter-rouge">0xc8c39d2d1e43425b</code> <code class="language-plaintext highlighter-rouge">1100100011000011100111010010110100011110010000110100001001011011</code>
+</li>
+      <li>
+<code class="language-plaintext highlighter-rouge">0x0004000000000001</code> → <code class="language-plaintext highlighter-rouge">0x92358a834ff5498c</code> <code class="language-plaintext highlighter-rouge">1001001000110101100010101000001101001111111101010100100110001100</code>
+</li>
+    </ul>
+  </dd>
+  <dt>String Types</dt>
+  <dd>Uses a slightly streamlined MurmurHash2 hash which is quite compact and fast.</dd>
+</dl>
+
+<p><a name="mumx"></a></p>
+
+<h3 id="mumx-">mumx <a href="index.html#table">↑</a>
+</h3>
+
+<p>Simple hash that uses exactly the same algorithm as <code class="language-plaintext highlighter-rouge">ankerl::unordered_dense::hash</code> for integral types (but with a different multiplier constatn), and reverts to <code class="language-plaintext highlighter-rouge">std::hash</code> for all other types.</p>
+
+<dl>
+  <dt>Integral Types</dt>
+  <dd>Same as <code class="language-plaintext highlighter-rouge">ankerl::unordered_dense::hash</code>, avalanching is good.
+    <ul>
+      <li>
+<code class="language-plaintext highlighter-rouge">0x0000000000000000</code> → <code class="language-plaintext highlighter-rouge">0x0000000000000000</code> <code class="language-plaintext highlighter-rouge">0000000000000000000000000000000000000000000000000000000000000000</code>
+</li>
+      <li>
+<code class="language-plaintext highlighter-rouge">0x0000000000000001</code> → <code class="language-plaintext highlighter-rouge">0x2ca7aea0ebd71d49</code> <code class="language-plaintext highlighter-rouge">0010110010100111101011101010000011101011110101110001110101001001</code>
+</li>
+      <li>
+<code class="language-plaintext highlighter-rouge">0x0000000000000002</code> → <code class="language-plaintext highlighter-rouge">0x594f5d41d7ae3a92</code> <code class="language-plaintext highlighter-rouge">0101100101001111010111010100000111010111101011100011101010010010</code>
+</li>
+      <li>
+<code class="language-plaintext highlighter-rouge">0x0001000000000000</code> → <code class="language-plaintext highlighter-rouge">0x1d492ca7aea0ebd7</code> <code class="language-plaintext highlighter-rouge">0001110101001001001011001010011110101110101000001110101111010111</code>
+</li>
+      <li>
+<code class="language-plaintext highlighter-rouge">0x0002000000000000</code> → <code class="language-plaintext highlighter-rouge">0x3a92594f5d41d7ae</code> <code class="language-plaintext highlighter-rouge">0011101010010010010110010100111101011101010000011101011110101110</code>
+</li>
+      <li>
+<code class="language-plaintext highlighter-rouge">0x0004000000000000</code> → <code class="language-plaintext highlighter-rouge">0x7524b29eba83af5c</code> <code class="language-plaintext highlighter-rouge">0111010100100100101100101001111010111010100000111010111101011100</code>
+</li>
+      <li>
+<code class="language-plaintext highlighter-rouge">0x0001000000000001</code> → <code class="language-plaintext highlighter-rouge">0x49f082074577f69e</code> <code class="language-plaintext highlighter-rouge">0100100111110000100000100000011101000101011101111111011010011110</code>
+</li>
+      <li>
+<code class="language-plaintext highlighter-rouge">0x0002000000000001</code> → <code class="language-plaintext highlighter-rouge">0x6739f7efb696cae7</code> <code class="language-plaintext highlighter-rouge">0110011100111001111101111110111110110110100101101100101011100111</code>
+</li>
+      <li>
+<code class="language-plaintext highlighter-rouge">0x0004000000000001</code> → <code class="language-plaintext highlighter-rouge">0xa1cb1c3e5154b215</code> <code class="language-plaintext highlighter-rouge">1010000111001011000111000011111001010001010101001011001000010101</code>
+</li>
+    </ul>
+  </dd>
+  <dt>String Types</dt>
+  <dd>Same as <code class="language-plaintext highlighter-rouge">std::hash</code>.</dd>
+</dl>
+
+<h1 id="conclusion">Conclusion</h1>
+
+<p>This benchmark, <a href="https://martin.ankerl.com/2019/04/01/hashmap-benchmarks-05-conclusion/">like the last one</a>, was a lot more effort than I originally anticipated. Redoing the benchmark took my computer weeks, and I’ve completely revamped the presentation with the big table which hopefully is easier to browse and search than the charts I’ve done in the last benchmark. I had a look at each hashmap, the different hashes, and tried to figure out why they behave one way or the other.</p>
+
+<p>So what’s actually the best map to choose? As you saw above, it depends. There are a lot of excellent implementations to choose from, each with different properties. I can’t give any advice here. Although I’ve spent a lot of time making the benchmarks as good as possible, they might not necessarily represent your real world needs.</p>
+
+<p>All of the work here is available as open source here: <a href="https://github.com/martinus/map_benchmark">https://github.com/martinus/map_benchmark</a></p>
+
+<p>If you like my work, I’d really appreciate it if you can <a href="https://github.com/sponsors/martinus">become my sponsor</a>!</p>
+
+<h1 id="errata">Errata</h1>
+
+<p>2022-09-07</p>
+<ul>
+  <li>I claimed that <code class="language-plaintext highlighter-rouge">std::hash</code> always uses identity hash. That’s not true, Microsoft’s STL uses fnv1a.</li>
+</ul>
+
+<p>2022-09-08</p>
+<ul>
+  <li>I wrote that absl::Hash is the slowest for <code class="language-plaintext highlighter-rouge">std::string</code>. This is totally not true, that statement should have gone to <code class="language-plaintext highlighter-rouge">boost::hash</code>.</li>
+</ul>
+
+      </article>
+
+      
+
+      
+
+      
+        <!-- Check if any share-links are active -->
+
+
+
+
+<section id="social-share-section">
+  <span class="sr-only">Share: </span>
+
+  
+    <a href="https://twitter.com/intent/tweet?text=Comprehensive+C%2B%2B+Hashmap+Benchmarks+2022&amp;url=http%3A%2F%2Fmartin.ankerl.com%2F2022%2F08%2F27%2Fhashmap-bench-01%2F" class="btn btn-social-icon btn-twitter" title="Share on Twitter">
+      <span class="fab fa-fw fa-twitter" aria-hidden="true"></span>
+      <span class="sr-only">Twitter</span>
+    </a>
+  
+
+  
+
+  
+    <a href="https://www.linkedin.com/shareArticle?mini=true&amp;url=http%3A%2F%2Fmartin.ankerl.com%2F2022%2F08%2F27%2Fhashmap-bench-01%2F" class="btn btn-social-icon btn-linkedin" title="Share on LinkedIn">
+      <span class="fab fa-fw fa-linkedin" aria-hidden="true"></span>
+      <span class="sr-only">LinkedIn</span>
+    </a>
+  
+
+  
+
+  
+
+</section>
+
+
+
+      
+
+      <ul class="pagination blog-pager">
+        
+        <li class="page-item previous">
+          <a class="page-link" href="https://martin.ankerl.com/2019/08/23/kindle-paperwhite-tips/" data-toggle="tooltip" data-placement="top" title="Kindle Paperwhite Tips">← Previous Post</a>
+        </li>
+        
+        
+      </ul>
+      
+  <div class="disqus-comments">
+  <div class="comments">
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+	  var disqus_shortname = 'martinankerl';
+	  /* ensure that pages with query string get the same discussion */
+	  var url_parts = window.location.href.split("?");
+	  var disqus_url = url_parts[0];
+	  (function() {
+		var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+		dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+		(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	  })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+</noscript>
+  </div>
+</div>
+  
+  
+
+  
+
+
+  
+
+  
+
+
+
+    </div>
+  </div>
+</div>
+
+
+  <footer>
+  <div class="container-md beautiful-jekyll-footer">
+    <div class="row">
+      <div class="col-xl-8 offset-xl-2 col-lg-10 offset-lg-1">
+      <ul class="list-inline text-center footer-links">
+<li class="list-inline-item">
+    <a href="https://martin.ankerl.com/feed.xml" title="RSS">
+      <span class="fa-stack fa-lg" aria-hidden="true">
+        <i class="fas fa-circle fa-stack-2x"></i>
+        <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+      </span>
+      <span class="sr-only">RSS</span>
+    </a>
+  </li>
+<li class="list-inline-item">
+    <a href="https://martin.ankerl.com/cdn-cgi/l/email-protection#74191506001d1a5a151a1f110618341319151d185a171b19" title="Email me">
+      <span class="fa-stack fa-lg" aria-hidden="true">
+        <i class="fas fa-circle fa-stack-2x"></i>
+        <i class="fas fa-envelope fa-stack-1x fa-inverse"></i>
+      </span>
+      <span class="sr-only">Email me</span>
+   </a>
+  </li>
+<li class="list-inline-item">
+    <a href="https://github.com/martinus" title="GitHub">
+      <span class="fa-stack fa-lg" aria-hidden="true">
+        <i class="fas fa-circle fa-stack-2x"></i>
+        <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+      </span>
+      <span class="sr-only">GitHub</span>
+   </a>
+  </li>
+<li class="list-inline-item">
+    <a href="https://twitter.com/sunitram" title="Twitter">
+      <span class="fa-stack fa-lg" aria-hidden="true">
+        <i class="fas fa-circle fa-stack-2x"></i>
+        <i class="fab fa-twitter fa-stack-1x fa-inverse"></i>
+      </span>
+      <span class="sr-only">Twitter</span>
+   </a>
+  </li>
+<li class="list-inline-item">
+    <a href="https://reddit.com/u/martinus" title="Reddit">
+      <span class="fa-stack fa-lg" aria-hidden="true">
+        <i class="fas fa-circle fa-stack-2x"></i>
+        <i class="fab fa-reddit fa-stack-1x fa-inverse"></i>
+      </span>
+      <span class="sr-only">Reddit</span>
+   </a>
+  </li>
+<li class="list-inline-item">
+    <a href="https://linkedin.com/in/mankerl" title="LinkedIn">
+      <span class="fa-stack fa-lg" aria-hidden="true">
+        <i class="fas fa-circle fa-stack-2x"></i>
+        <i class="fab fa-linkedin fa-stack-1x fa-inverse"></i>
+      </span>
+      <span class="sr-only">LinkedIn</span>
+   </a>
+  </li>
+<li class="list-inline-item">
+    <a href="https://stackoverflow.com/users/48181/martinus" title="StackOverflow">
+      <span class="fa-stack fa-lg" aria-hidden="true">
+        <i class="fas fa-circle fa-stack-2x"></i>
+        <i class="fab fa-stack-overflow fa-stack-1x fa-inverse"></i>
+      </span>
+      <span class="sr-only">StackOverflow</span>
+   </a>
+  </li>
+<li class="list-inline-item">
+    <a href="https://www.youtube.com/c/daattali" title="YouTube">
+      <span class="fa-stack fa-lg" aria-hidden="true">
+        <i class="fas fa-circle fa-stack-2x"></i>
+        <i class="fab fa-youtube fa-stack-1x fa-inverse"></i>
+      </span>
+      <span class="sr-only">YouTube</span>
+   </a>
+  </li>
+<li class="list-inline-item">
+    <a href="https://patreon.com/DeanAttali" title="Patreon">
+      <span class="fa-stack fa-lg" aria-hidden="true">
+        <i class="fas fa-circle fa-stack-2x"></i>
+        <i class="fab fa-patreon fa-stack-1x fa-inverse"></i>
+      </span>
+      <span class="sr-only">Patreon</span>
+    </a>
+  </li>
+</ul>
+
+      
+      <p class="copyright text-muted">
+      
+        Martin Leitner-Ankerl
+         • 
+      
+      2024
+
+      
+         • 
+        <span class="author-site">
+          <a href="https://martin.ankerl.com/">martin.ankerl.com</a>
+        </span>
+      
+
+      
+
+      
+         • 
+        <a title="Edit this page on GitHub" href="https://github.com/martinus/martinus.github.io/edit/master/_posts/2022/2022-08-27-hashmap-bench-01.md" class="text_muted">Edit page</a>
+       
+
+      </p>
+      <p class="theme-by text-muted">
+        Powered by
+        <a href="https://beautifuljekyll.com">Beautiful Jekyll</a>
+      </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+  
+  
+    
+  <script data-cfasync="false" src="../../../../cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha256-4+XzXVhsDmqanXGHaHvgh1gMQKX40OUvDEBTu8JcmNs=" crossorigin="anonymous"></script>
+
+
+  
+    
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+
+
+  
+    
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+
+
+  
+
+
+
+  
+    <!-- doing something a bit funky here because I want to be careful not to include JQuery twice! -->
+    
+      <script src="../../../../assets/js/beautifuljekyll.js"></script>
+    
+  
+
+
+
+
+
+
+
+
+
+</body>
+</html>

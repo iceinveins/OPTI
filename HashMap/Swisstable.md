@@ -4,7 +4,7 @@
 
 keyword: 局部性原理，SSE2，哈希冲突，性能抖动
 
-## <font  color='dc843f'>传统HashMap vs Swisstable</font>
+## <font  color='dc843f'>Why Swisstable</font>
 **传统HashMap**
 1. 线性探测法（Linear Probing）
 属于开放寻址法（Open Addressing）的一种。当发生哈希冲突时，也就是新插入的元素计算出的哈希地址已经被其他元素占用，线性探测法会从该冲突位置开始，按照顺序依次检查下一个位置（通常是逐个位置往后检查），直到找到一个空位置来存放新元素。
@@ -19,7 +19,7 @@ keyword: 局部性原理，SSE2，哈希冲突，性能抖动
 swisstable力求在缓存友好、性能和内存用量上找到平衡.  
 时间复杂度和线性探测法的差不多，空间复杂度介于链表法和线性探测之间。
 
-## <font  color='dc843f'>swisstable原理</font>
+#### <font  color='dc843f'>swisstable原理</font>
 使用改进的线性探测法来解决hash冲突。
 
 ![alt text](assets/images/struct.PNG)
@@ -55,7 +55,20 @@ swisstable会根据H1的值来确定group的起始位置，然后按照一个个
 这就是swisstable拥有惊人性能的主要原因：它尽量避免线性探测法导致的大量等值比较和链表法会带来的缓存命中率低下，以及在单位时间内它能同时过滤N个（通常为16，因为16x8=128，是大多数平台上SIMD指令专用的向量寄存器的大小）元素，且可以用位运算代替对数据的遍历。这会为哈希表的吞吐量带来质的飞跃。
 ![alt text](assets/images/search_2.png)
 
-## <font  color='dc843f'>SwissTable还有什么需要注意的地方</font>
+## <font  color='dc843f'>How to use SwissTable</font>
+[folly::F14Map](https://github.com/facebook/folly/blob/main/folly/container/F14Map.h)  
+[absl::flat_hash_map](https://github.com/abseil/abseil-cpp/blob/master/absl/container/flat_hash_map.h)
+| 维度       | F14Map             | flat_hash_map          |
+| ---------- | ------------------ | ---------------------- |
+| 查找性能   | 高冲突率场景更优   | 低冲突率场景更快       |
+| 内存占用   | F14ValueMap更紧凑  | 整体紧凑，元数据略高   |
+| 迭代速度   | 较慢（非连续内存） | 接近数组遍历           |
+| 依赖生态   | 适合Folly项目      | 适合轻量级或跨平台项目 |
+| 编译器要求 | 需要较新C++支持    | 兼容旧编译器           |
+
+优先选择与现有技术栈集成的库，若二者均未使用，则根据性能测试结果选择。若无法实测，默认推荐 absl::flat_hash_map（更通用），仅在需要处理高冲突或内存敏感时用 F14Map。
+
+#### <font color="dc843f">需要注意的地方</font>
 对于使用者来说只有一个需要注意的地方：如果你要自定义key的哈希函数，一定得提供一个质量最上乘的。因为现在哈希函数计算出来的值除了要让数据尽量均匀分布之外，还得尽量保证每一个bit的概率均等性，也就是尽量接近前面说的“`完美哈希函数`”，否则哈希特征值会出现很多重复值，这样即使有再多的批量操作，还是会被大量等值比较拖慢速度。不过这也有上限，最低也差不多在1/128，因为我们就用了七位哈希值。如果我们用了个质量堪忧的哈希函数，这个重复率就可能变成1/20，SIMD带来的性能优势可能就荡然无存了。
 
 对于想实现swisstable的人来说，注意点会稍微多一些。
