@@ -8,6 +8,12 @@ SSE指令：128位寄存器，单指令处理4个float,不支持double
 
 SSE2指令：128位寄存器，单指令处理4个float,且支持处理2个double
 
+SSE4.2指令：128位寄存器，在SSE2基础上拓展专用指令（如字符串操作、CRC32、POPCNT）   
+可在以下场景显著提升性能：
+字符串处理（协议解析、日志分析）
+数据校验（网络包 CRC、存储校验和）
+整数运算（哈希计算、加密算法）
+
 AVX2指令：256位寄存器，单指令处理8个float,且支持处理4个double
 
 AVX-512：512位寄存器，单指令处理16个float
@@ -81,3 +87,7 @@ void avx2_matrix_mult(float* C, const float* A, const float* B, int n) {
 1. 数据并行性优先于指令并行性  
 2. 缓存行对齐比算法复杂度更重要  
 3. 分支预测失效的代价远超运算本身  
+
+---
+Reference  
+[AVX2](https://blog.csdn.net/qq_17075011/article/details/130555559)
