@@ -83,3 +83,50 @@ numactl --cpubind=0 --membind=0 ./${PROJECT_ID}.elf 20000
 numactl --cpubind=0 --membind=1 ./${PROJECT_ID}.elf 20000 
 ```
 对比输出可得使用远程内存比使用本地内存慢了约30%
+
+#### <font color="dc843f">查看进程的 NUMA 内存分布</font>
+运行命令：
+numastat -p 1234
+输出示例：
+```
+Per-node process memory usage (in MBs) for PID 1234 (mysqld)
+                           Node 0          Node 1           Total
+                  --------------- --------------- ---------------
+Heap                  500.12          2000.45        2500.57
+Stack                  10.23             5.67          15.90
+Private               300.78          1500.34        1801.12
+Shared                100.00            50.00         150.00
+Anonymous             800.00          3500.00        4300.00
+File                  200.00           100.00         300.00
+Total                1910.13          7156.46        9066.59
+Possible              2048.00          8192.00       10240.00
+```
+
+1. 字段解析
+Heap：进程堆内存（动态分配的内存，如 Java/C++ 对象）。  
+Stack：线程栈内存（每个线程独立分配）。  
+Private：私有内存（仅被当前进程使用，如堆、栈）。  
+Shared：共享内存（如共享库、IPC 共享内存）。  
+Anonymous：匿名内存（无文件背景的内存，如动态分配的堆）。  
+File：文件映射内存（如内存映射文件、共享库）。  
+Total：进程在该节点占用的总内存。  
+Possible：系统理论可分配给该进程的最大内存（内核估算值）。
+
+不均衡分配：若进程的 Heap 或 Private 内存集中在某一节点（如 Node1），而进程的 CPU 绑定在另一节点（如 Node0），则会导致跨节点访问延迟。  
+跨节点共享内存：如果 Shared 内存分布在多个节点，可能因同步开销导致性能下降。  
+Possible 值异常：若 Possible 远小于实际分配值，说明内核认为进程无法获得足够内存，可能触发 OOM（内存不足）。  
+
+场景 1：跨节点内存分配  
+现象：进程的 Heap 或 Private 内存主要分布在非本地节点。  
+Heap (Node0): 500 MB   Heap (Node1): 2000 MB  
+分析：如果该进程的 CPU 绑定在 Node0，但堆内存主要在 Node1，访问延迟会显著增加。  
+
+场景 2：内存碎片化  
+现象：File 或 Shared 内存分布在多个节点，且数值较高。  
+Shared (Node0): 100 MB   Shared (Node1): 50 MB  
+分析：共享内存跨节点分布可能导致缓存一致性开销（如多线程频繁访问不同节点的共享数据）。  
+
+场景 3：内存不足  
+现象：Total 接近 Possible，或 Possible 显著小于预期。  
+Total (Node0): 1910 MB   Possible (Node0): 2048 MB  
+分析：进程可能因节点内存不足导致分配失败（需检查系统剩余内存）。  
