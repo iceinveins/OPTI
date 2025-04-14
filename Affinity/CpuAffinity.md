@@ -16,7 +16,7 @@
 | SCHEDULE AFFINITY | 进程     | 执行进程时将进程绑定在某些cpu核上                    | taskset -c                                                               |
 | THREAD AFFINITY   | 线程     | 指定线程运行在某些cpu核上                            | pthread_setaffinity_np, pthread_getaffinity_np -设置/获取线程的CPU亲和力 |
 
-***查看进程分配的CPU Core***  
+#### <font color="dc843f">查看进程分配的CPU Core</font>
 可以使用taskset命令查看：
 ```
 taskset -c -p <pid>
@@ -27,7 +27,7 @@ pid 17147's current affinity list: 3-5
 更具体地查看某进程当前正运行在哪个CPU Core上，我们可以使用top命令查看：`top -p <uid>`
 
 
-***taskset***  
+#### <font color="dc843f">taskset</font>
 使用taskset命令将进程绑定到指定核：
 ```
 taskset -cp <core> <pid>
@@ -35,7 +35,7 @@ taskset -cp <core> <pid>
 如：
 `taskset -cp 1,2,3 31693`该例会将PID为31693的进程绑定到1-3核上运行。
 
-***sched_setaffinity***
+#### <font color="dc843f">sched_setaffinity</font>
 编写代码时，我们可以通过sched_setaffinity()函数设置CPU亲和力的掩码，从而将该线程或者进程与指定的CPU绑定。  
 一个CPU的亲和力掩码用一个cpu_set_t结构体来表示一个CPU集合，下面这几个宏分别对掩码集进行操作：
 ```
@@ -65,8 +65,12 @@ cpuset即用cpu_set_t结构体表示的CPU Core集合。
 [set_affinity.hpp](../test_utility/set_affinity.hpp)  
 注意：若使用到pthread，则需要将pthread.h放到sched.h之后，并在sched.h之前声明#define __USE_GNU，否则会出现undefined reference CPU_ZERO等错误。
 
-***屏蔽硬中断（硬盘、网卡）***  
-中断源（IRQ）向CPU Core发送中断，CPU Core调用中断处理程序对中断进程处理。我们可以通过改写/proc/irq/*/smp_affinity文件，避免中断源（IRQ）向某些CPU Core发送中断。该方法对硬盘、网卡等设备引起的硬中断有效。
+
+---
+实时进程可以绑核了,还需要结合屏蔽中断，以避免被不必要的中断打断/切换上下文
+# <font color="3d8c95">屏蔽中断</font>
+#### <font color="dc843f">屏蔽硬中断（硬盘、网卡）</font>
+中断源（IRQ）向CPU Core发送中断，CPU Core调用中断处理程序对中断进程处理。我们可以通过改写/proc/irq/*/smp_affinity文件(*表示IRQ号)，避免中断源（IRQ）向某些CPU Core发送中断。该方法对硬盘、网卡等设备引起的硬中断有效。
 查看设备中断数据
 通过查看/proc/interrupts文件可查看设备中断数据：
 ```
@@ -129,7 +133,7 @@ echo 3 > /proc/irq/65/smp_affinity
 echo 3 > /proc/irq/66/smp_affinity
 ```
 
-***屏蔽软中断（Work queue）***  
+#### <font color="dc843f">屏蔽软中断（Work queue）</font>
 workqueue是自kernel2.6引入的一种任务执行机制，和softirq，tasklet并称下半部（bottom half）三剑客。workqueue在进程上下文异步执行任务，能够进行睡眠。可以通过改写/sys/devices/virtual/workqueue/*/cpumask文件实现屏蔽Work queue的软中断。
 /sys/devices/virtual/workqueue/cpumask文件中记录了全局的cpumask，可以影响所有的workqueue。文件内容格式与smp_affinity相同：
 ```
@@ -150,4 +154,6 @@ Linux的scheduler time slice是通过LOC实现的，如果我们让一个线程�
 ```
 nohz=on nohz_full=6-8 rcu_nocbs=6-8
 ```
+详情见[kernel_cmdline](../kernel_cmdline.md)
+
 进入adaptive-ticks模式后，如果CPU Core上的running task只有一个时，系统向其发送的LOC频率会显著降低，但LOC不能被完全屏蔽，系统内核的一些操作比如计算CPU负载等仍然需要周期性的LOC。
