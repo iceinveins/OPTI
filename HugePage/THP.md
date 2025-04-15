@@ -20,14 +20,9 @@
 >$ cat /sys/kernel/mm/transparent_hugepage/enabled
 [always] madvise never
 ```
-<font  color='235977'>
-
-[always] 表示已经开启
-
-[never] 表示透明大页禁用
-
-[madvise] 表示只在MADV_HUGEPAGE标志的VMA中使用THP
-</font>
+[always] 表示已经开启  
+[never] 表示透明大页禁用  
+[madvise] 表示只在MADV_HUGEPAGE标志的VMA中使用THP  
 
 同时也可以在内核启动参数进行配置：
 ```
@@ -43,44 +38,41 @@ echo always > /sys/kernel/mm/transparent_hugepage/enabled
 echo madvise > /sys/kernel/mm/transparent_hugepage/enabled
 echo never > /sys/kernel/mm/transparent_hugepage/enabled
 ```
----
+
+***碎片整理配置***  
 为了为用户提供更多的THP使用，内核会对内存进行碎片整理，将连续的普通page合并为THP。  
-当然<font  color='fed3a8'>碎片整理</font>也有开关可以控制：
-- always：意思是当用户分配THP内存时，当没有足够THP内存可用时，请求会阻塞住，然后进行内存回收、 压缩，然后尽最大努力分配出一个THP。使用这个选项，显然会给程序带来不确定的延时。
-defer：Linux4.6开始支持该项。意思是程序会唤醒内核进程kswapd异步回收内存，同时唤醒kcompactd异步压 缩合并内存，从而避免了当分配THP时，连续内存不足2m时，同步压缩内存带来的进程停顿。
-- defer+madvise：Linux4.11开始支持该项。意思是当THP内存不足时，用户请求分配THP内存时会直接回收、合 并内存，就像always选项一样，但是只针对调用madvise(MADV_HUGEPAGE)的内存区域。其他区域的内存会像defer 配置一样运作。
-- madvise：当用户分配THP内存失败时，只对调用madvise(MADV_HUGEPAGE)的内存区域进行内存回收、合并。
-- never：关闭用户分配THP内存失败时的回收机制。
+- 透明大页THP碎片整理：透明大页的碎片整理可以合并系统中分散的小页面，以创建更大的页面，以减少内存碎片化并提高性能。
+  - 功能开关：  
+    always：意思是当用户分配THP内存时，当没有足够THP内存可用时，请求会阻塞住，然后进行内存回收、 压缩，然后尽最大努力分配出一个THP。使用这个选项，显然会给程序带来不确定的延时。  
+    defer：Linux4.6开始支持该项。意思是程序会唤醒内核进程kswapd异步回收内存，同时唤醒kcompactd异步压 缩合并内存，从而避免了当分配THP时，连续内存不足2m时，同步压缩内存带来的进程停顿。  
+    defer+madvise：Linux4.11开始支持该项。意思是当THP内存不足时，用户请求分配THP内存时会直接回收、合 并内存，就像always选项一样，但是只针对调用madvise(MADV_HUGEPAGE)的内存区域。其他区域的内存会像defer 配置一样运作。  
+    madvise：当用户分配THP内存失败时，只对调用madvise(MADV_HUGEPAGE)的内存区域进行内存回收、合并。    
+    never：关闭用户分配THP内存失败时的回收机制。  
 
-```
-echo always > /sys/kernel/mm/transparent_hugepage/defrag
-echo defer > /sys/kernel/mm/transparent_hugepage/defrag
-echo defer+madvise > /sys/kernel/mm/transparent_hugepage/defrag
-echo madvise > /sys/kernel/mm/transparent_hugepage/defrag
-echo never > /sys/kernel/mm/transparent_hugepage/defrag
-```
+    ```
+    echo always > /sys/kernel/mm/transparent_hugepage/defrag
+    echo defer > /sys/kernel/mm/transparent_hugepage/defrag
+    echo defer+madvise > /sys/kernel/mm/transparent_hugepage/defrag
+    echo madvise > /sys/kernel/mm/transparent_hugepage/defrag
+    echo never > /sys/kernel/mm/transparent_hugepage/defrag
+    ```
+  - huge_zero_page：是内核为THP读请求时的一个优化，可以决定是否开启：
+    ```
+    echo 0 > /sys/kernel/mm/transparent_hugepage/use_zero_page
+    echo 1 > /sys/kernel/mm/transparent_hugepage/use_zero_page
+    ```
+- khugepaged碎片整理：khugepaged是一个内核线程，主要负责管理和整理大页，以减少内存碎片化并提高性能。它会监视系统中的大页面，当发现分散的大页时，会尝试将它们合并成更大的页，以提高内存利用率和性能。
+  - 功能开关： 配置为0时，关闭khugepaged碎片整理功能；配置为1时，khugepaged内核守护进程会在系统空闲时周期性唤醒，尝试将连续的4 KB页合并成2 MB的透明大页。配置文件路径为`/sys/kernel/mm/transparent_hugepage/khugepaged/defrag`
+  - 重试间隔：指当透明大页THP分配失败时，khugepaged内核守护进程进行下一次大页分配前需要等待的时间，来避免短时间内连续发生大页分配失败。默认值为60000，单位为毫秒，即默认等待60秒。配置文件路径为`/sys/kernel/mm/transparent_hugepage/khugepaged/alloc_sleep_millisecs`
+  - 唤醒间隔：指khugepaged内核守护进程每次唤醒的时间间隔。默认值为10000，单位为毫秒，即默认每10秒唤醒一次。配置文件路径为`/sys/kernel/mm/transparent_hugepage/khugepaged/scan_sleep_millisecs`
+  - 扫描页数：指khugepaged内核守护进程每次唤醒后扫描的页数。默认值为4096个页。配置文件路径为`/sys/kernel/mm/transparent_hugepage/khugepaged/pages_to_scan`
 
 ---
-<font  color='fed3a8'>huge zero page</font>是内核为THP读请求时的一个优化，可以决定是否开启：
-
-```
-echo 0 > /sys/kernel/mm/transparent_hugepage/use_zero_page
-echo 1 > /sys/kernel/mm/transparent_hugepage/use_zero_page
-```
-
 <font  color='fed3a8'>当THP被设置为always或者madvise时，khugepaged会自动开启</font>，
+当THP被设置为never时，khugepaged 会被自动关闭。khugepaged周期性运行以回收、合并内存。用户不想在分配内存时回收、合并内存时，至少应该开启khugepaged来回收、合并内存。
 
-当THP被设置为never时，khugepaged 会被自动关闭。khugepaged周期性运行以回收、合并内存。用户不想在分配内存时回收、合并内存时，至少应该开启khugepaged来回收、合并内存。当然khugepaged也可以被关闭：
+<font color="fed3a8">对于延迟敏感的高频交易系统建议关闭THP</font>
 
-```
-echo 0 > /sys/kernel/mm/transparent_hugepage/khugepaged/defrag
-echo 1 > /sys/kernel/mm/transparent_hugepage/khugepaged/defrag
-```
-
-同时也可以通过`/sys/kernel/mm/transparent_hugepage/khugepaged/pages_to_scan控制khugepaged`每次扫描多 少个page。
-
-通过`/sys/kernel/mm/transparent_hugepage/khugepaged/scan_sleep_millisecs`控制khugepaged每次扫描的间隔， 单位是毫秒。当其被设置为0是，会使一个CPU核使用率达到100%。
-
-通过`/sys/kernel/mm/transparent_hugepage/khugepaged/alloc_sleep_millisecs`控制khugepaged内部每次分配 失败时SLEEP多久再进行一下次尝试，通常不需要调整。
-
-还有一些其他参数，详见[Transparent Hugepage Support](https://docs.kernel.org/admin-guide/mm/transhuge.html)
+还有一些其他参数，详见  
+[Transparent Hugepage Support](https://docs.kernel.org/admin-guide/mm/transhuge.html)  
+[阿里云THP相关性能调优](https://help.aliyun.com/zh/alinux/support/performance-tuning-method-related-to-transparent-large-page-thp-in)  
