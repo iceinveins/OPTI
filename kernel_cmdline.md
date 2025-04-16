@@ -1,7 +1,7 @@
 # <font  color='3d8c95'>内核启动参数</font>
 ```
 $ cat /proc/cmdline
-BOOT_IMAGE=/vmlinuz-3.10.0-957.el7.x86_64 root=/dev/mapper/centos-root ro crashkernel=auto rd.lvm.lv=centos/root rd.md.uuid=1a311e1e:06ebc8df:1405016d:c833173e rd.md.uuid=a7825017:37858b5e:2a22accb:092b165e rd.lvm.lv=centos/swap rhgb quiet intel_idle.max_cstate=0 processor.max_cstate=0 idle=poll nohz=on mce=ignore_ce nmi_watchdog=0 audit=0 nosoftlockup pcie_aspm=performance intel_pstate=disable transparent_hugepage=never numa_balancing=disable selinux=0 clocksource=tsc rcu_nocb_poll acpi_irq_nobalance ipv6.disable=1 pcie_port_pm=off ipmi_si.force_kipmid=0 tsc=reliable iommu=off intel_iommu=off mitigations=off spectre_v2=off isolcpus=6-17 nohz_full=6-17 rcu_nocbs=6-17 skew_tick=1 noht
+BOOT_IMAGE=/vmlinuz-3.10.0-957.el7.x86_64 root=/dev/mapper/centos-root ro crashkernel=auto rd.lvm.lv=centos/root rd.md.uuid=1a311e1e:06ebc8df:1405016d:c833173e rd.md.uuid=a7825017:37858b5e:2a22accb:092b165e rd.lvm.lv=centos/swap rhgb quiet intel_idle.max_cstate=0 processor.max_cstate=0 idle=poll nohz=on mce=ignore_ce nmi_watchdog=0 audit=0 nosoftlockup pcie_aspm=performance intel_pstate=disable transparent_hugepage=never numa_balancing=disable selinux=0 clocksource=tsc rcu_nocb_poll acpi_irq_nobalance ipv6.disable=1 pcie_port_pm=off ipmi_si.force_kipmid=0 tsc=reliable iommu=off intel_iommu=off mitigations=off spectre_v2=off isolcpus=6-17 nohz_full=6-17 rcu_nocbs=6-17 skew_tick=1 noht nosmp
 ```
 ## <font  color='dc843f'>Why 为什么配置启动参数</font>
 这些参数旨在最大化系统性能和降低延迟，适用于对实时性要求极高的场景（如高频交易、实时数据处理）。通过以下手段实现：
@@ -83,5 +83,5 @@ vim /etc/default/grub
     `tsc=reliable` 标记 TSC 为可靠；`ipmi_si.force_kipmid=0` 禁用 IPMI 内核线程。
 
 - 超线程禁用  
-    `noht` 禁用超线程（Hyper-Threading），仅使用物理核心。
+    `noht nosmt` 禁用超线程（Hyper-Threading），仅使用物理核心。
 
