@@ -1,7 +1,7 @@
 # <font  color='3d8c95'>内核启动参数</font>
 ```
 $ cat /proc/cmdline
-BOOT_IMAGE=/vmlinuz-3.10.0-957.el7.x86_64 root=/dev/mapper/centos-root ro crashkernel=auto rd.lvm.lv=centos/root rd.md.uuid=1a311e1e:06ebc8df:1405016d:c833173e rd.md.uuid=a7825017:37858b5e:2a22accb:092b165e rd.lvm.lv=centos/swap rhgb quiet intel_idle.max_cstate=0 processor.max_cstate=0 idle=poll nohz=on mce=ignore_ce nmi_watchdog=0 audit=0 nosoftlockup pcie_aspm=performance intel_pstate=disable transparent_hugepage=never selinux=0 clocksource=tsc rcu_nocb_poll acpi_irq_nobalance ipv6.disable=1 pcie_port_pm=off ipmi_si.force_kipmid=0 tsc=reliable iommu=off intel_iommu=off mitigations=off spectre_v2=off isolcpus=6-17 nohz_full=6-17 rcu_nocbs=6-17 skew_tick=1 noht
+BOOT_IMAGE=/vmlinuz-3.10.0-957.el7.x86_64 root=/dev/mapper/centos-root ro crashkernel=auto rd.lvm.lv=centos/root rd.md.uuid=1a311e1e:06ebc8df:1405016d:c833173e rd.md.uuid=a7825017:37858b5e:2a22accb:092b165e rd.lvm.lv=centos/swap rhgb quiet intel_idle.max_cstate=0 processor.max_cstate=0 idle=poll nohz=on mce=ignore_ce nmi_watchdog=0 audit=0 nosoftlockup pcie_aspm=performance intel_pstate=disable transparent_hugepage=never numa_balancing=disable selinux=0 clocksource=tsc rcu_nocb_poll acpi_irq_nobalance ipv6.disable=1 pcie_port_pm=off ipmi_si.force_kipmid=0 tsc=reliable iommu=off intel_iommu=off mitigations=off spectre_v2=off isolcpus=6-17 nohz_full=6-17 rcu_nocbs=6-17 skew_tick=1 noht
 ```
 ## <font  color='dc843f'>Why 为什么配置启动参数</font>
 这些参数旨在最大化系统性能和降低延迟，适用于对实时性要求极高的场景（如高频交易、实时数据处理）。通过以下手段实现：
@@ -13,6 +13,12 @@ BOOT_IMAGE=/vmlinuz-3.10.0-957.el7.x86_64 root=/dev/mapper/centos-root ro crashk
 代价是牺牲安全性、功耗增加和硬件兼容性风险，需在严格受控环境中使用。
 
 ## <font  color='dc843f'>How 如何配置</font>
+编辑GRUB配置文件
+```
+vim /etc/default/grub
+```
+找到GRUB_CMDLINE_LINUX="...其他参数... noht" 并在其中添加如noht（注意空格分隔）  
+更新后执行grub2-mkconfig -o /boot/grub2/grub.cfg (不同linux版本如Ubuntu CentOS不同)
 ### 1. 系统引导与基础配置  
     `BOOT_IMAGE=/vmlinuz-3.10.0-957.el7.x86_64`  指定启动时加载的内核镜像文件路径。  
 
@@ -52,6 +58,9 @@ BOOT_IMAGE=/vmlinuz-3.10.0-957.el7.x86_64 root=/dev/mapper/centos-root ro crashk
     `transparent_hugepage=never`：禁用透明大页，避免内存分配延迟波动。
 
     `iommu=off` 和 `intel_iommu=off`：禁用 IOMMU（输入输出内存管理单元），减少虚拟化开销。
+
+- numa架构
+  `numa_balancing=disable`：禁用numa_balancing, 避免其周期性地将内存页面迁移到CPU本地节点导致大量地TLB shootdown
 
 ### 3. 安全与监控禁用  
 - 安全缓解措施关闭  
