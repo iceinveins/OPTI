@@ -68,6 +68,11 @@ numactl --interleave=all test_program arguments
 numactl --preferred=1
 ```
 
+***建议用法***  
+1. 查看numa节点拓扑情况
+2. 利用isolcpus等内核启动参数将目标程序需要运行的numa node对应核心空出来，并屏蔽部分中断。  
+3. 将目标程序使用numactl绑定在指定numa node上
+
 ***关闭NUMA***  
 - 方法一：通过bios关闭  
 BIOS:interleave = Disable / Enable
@@ -75,6 +80,8 @@ BIOS:interleave = Disable / Enable
 1、编辑 /etc/default/grub 文件，加上：numa=off
 GRUB_CMDLINE_LINUX="crashkernel=auto numa=off rd.lvm.lv=centos/root rd.lvm.lv=centos/swap rhgb quiet"  
 2、重新生成 /etc/grub2.cfg 配置文件：# grub2-mkconfig -o /etc/grub2.cfg
+
+若不关闭NUMA，要注意numa_balancing带来的TLB shutdown
 
 ## <font  color='dc843f'>测试 NUMA</font>
 [test_numa](assets/test_NUMA/test_numa.cpp)
@@ -129,4 +136,8 @@ Shared (Node0): 100 MB   Shared (Node1): 50 MB
 场景 3：内存不足  
 现象：Total 接近 Possible，或 Possible 显著小于预期。  
 Total (Node0): 1910 MB   Possible (Node0): 2048 MB  
-分析：进程可能因节点内存不足导致分配失败（需检查系统剩余内存）。  
+分析：进程可能因节点内存不足导致分配失败（需检查系统剩余内存）。 
+
+# <font color="3d8c95">额外</font>
+#### <font color="dc843f">禁用Hypter-Threading可能导致NUMA node增加</font>
+实测Intel(R) Xeon(R) Gold 6346 CPU @ 3.10GHz禁用后节点从2 ==> 4
