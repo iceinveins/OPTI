@@ -42,6 +42,12 @@ AVX-512：512位寄存器，单指令处理16个float
 
 编译前可以通过`g++ -Q --help=target`或者`lscpu`检查编译机器是否支持此指令集，若不支持，编译时可能会报错`Illegal instruction`
 
+#### <font color="dc843f">非临时存储（Non-Temporal Stores）</font>
+绕过缓存直接写入内存，避免污染缓存。
+```
+_mm_stream_si32(reinterpret_cast<int*>(ptr), value); // SSE指令
+```
+
 #### <font  color='dc843f'>AVX2矩阵乘法性能爆炸</font>
 当处理矩阵运算时，AVX2的优势更加明显。看这个矩阵转置乘法示例：
 ```

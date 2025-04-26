@@ -122,3 +122,56 @@ failure: The memory synchronization ordering for the load operation if the compa
 [atomic_queue](https://github.com/max0x7ba/atomic_queue/blob/master/include/atomic_queue/atomic_queue.h)  
 [moodycamel::ReaderWriterQueue](https://github.com/cameron314/readerwriterqueue/blob/master/readerwriterqueue.h)  
 [moodycamel::BlockingReaderWriterCircularBuffer](https://github.com/cameron314/readerwriterqueue/blob/master/readerwritercircularbuffer.h)  
+
+实现无锁队列需要：
+1. 原子操作与正确内存序
+- 入队：使用 memory_order_release 确保数据写入对其他线程可见。
+- 出队：使用 memory_order_acquire 确保读取到最新数据。
+2. 解决 ABA 问题（如 Tagged Pointer）
+通过 带标签指针（Tagged Pointer） 或 危险指针（Hazard Pointers） 避免 CAS 误判。
+```
+// 使用 double-word CAS（如 x86_64 的 128 位 CAS）
+struct TaggedPtr {
+    Node* ptr;
+    uintptr_t tag;
+};
+
+std::atomic<TaggedPtr> head;
+
+bool dequeue(T& data) {
+    TaggedPtr old_head = head.load(std::memory_order_acquire);
+    while (true) {
+        if (!old_head.ptr) return false; // 队列为空
+        TaggedPtr new_head = {old_head.ptr->next, old_head.tag + 1};
+        if (head.compare_exchange_weak(old_head, new_head, 
+                                    std::memory_order_acq_rel)) {
+            data = old_head.ptr->data;
+            // 安全回收 old_head.ptr（如 hazard pointers）
+            return true;
+        }
+    }
+}
+```
+3. 安全的内存回收（如 Hazard Pointers）
+4. 循环 CAS 保证更新原子性
+```
+void enqueue(T value) {
+    Node* new_node = new Node(value);
+    Node* curr_tail;
+    do {
+        curr_tail = tail.load(std::memory_order_relaxed);
+    } while (!curr_tail->next.compare_exchange_weak(
+        nullptr, new_node, 
+        std::memory_order_release, std::memory_order_relaxed));
+    tail.compare_exchange_weak(curr_tail, new_node, 
+                             std::memory_order_release);
+}
+```
+1. 性能优化（缓存行对齐）
+分离头尾指针：确保它们位于不同缓存行。
+```
+struct alignas(64) AlignedPtr {
+    std::atomic<Node*> ptr;
+};
+AlignedPtr head, tail; // 避免伪共享
+```
