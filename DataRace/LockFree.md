@@ -167,7 +167,7 @@ void enqueue(T value) {
                              std::memory_order_release);
 }
 ```
-1. 性能优化（缓存行对齐）
+5. 性能优化（缓存行对齐）
 分离头尾指针：确保它们位于不同缓存行。
 ```
 struct alignas(64) AlignedPtr {
